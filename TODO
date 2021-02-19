@@ -1,5 +1,4 @@
 1 Help message
-1 Better error handler
 1 Selecting where a form is completed
 1 Set roles, auto accept etc.
 DB Exclusive
@@ -16,3 +15,4 @@ DB Exclusive
 Editing questions
 Calendar border doesn't match final number
 Calendar does not show if a question is required
+Better error handler

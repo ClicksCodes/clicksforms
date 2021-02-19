@@ -322,7 +322,7 @@ class Apply(commands.Cog):
                             await m.clear_reactions()
                             break
                         else:
-                            responses.append(response.attachments[0].url)
+                            responses.append(out.attachments[0].url)
                             continue
                 elif question['type'] == "date":
                     now = datetime.datetime.now()
