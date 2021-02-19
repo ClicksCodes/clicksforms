@@ -1,15 +1,16 @@
 1 Help message
 1 Better error handler
-1 View all responses
-1 Actually save forms to a DB
 1 Selecting where a form is completed
-1 Anonymous forms
 1 Set roles, auto accept etc.
+DB Exclusive
+    1 Actually save forms to a DB
+    1 View all responses
 
 2 Completing forms online
 
 3 Public form templates
 3 Creating forms online
+3 Char limits
 
 
 Editing questions

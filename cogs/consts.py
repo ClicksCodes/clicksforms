@@ -51,30 +51,33 @@ class Features:
     description = emojis["qdescription"]
     colour = emojis["qcolour"]
     required = emojis["qrequired"]
-    changeimg = 812273033649717298  # Change image (green)
-    changeurl = 812276265293578250  # Change URL (green)
+    changeimg = emojis["changeimg"]
+    changeurl = emojis["changeurl"]
+
+    anon = 812326537255845950
+    nanon = 812326537449701406
 
 
 class Responses:
-    r1 = 805737834098065408  # Circle
-    r2 = 805737834069622814  # Triangle
-    r3 = 805737834136731658  # Square
-    r4 = 805737833792536597  # Cross
-    r5 = 805737834005921812  # Plus
-    r6 = 805737833813377065  # Horizontal
-    r7 = 805737833972236308  # Vertical
-    r8 = 805737833879961600  # Star
+    r1 = emojis["r1"]
+    r2 = emojis["r2"]
+    r3 = emojis["r3"]
+    r4 = emojis["r4"]
+    r5 = emojis["r5"]
+    r6 = emojis["r6"]
+    r7 = emojis["r7"]
+    r8 = emojis["r8"]
 
 
 class Colours:
-    r = 805739333104566272  # Red
-    o = 805739333210210334  # Orange
-    y = 805739333080449074  # Yellow
-    g = 805739333176262657  # Green
-    b = 805739333268013176  # Blue
-    m = 805739333444435988  # Magenta
-    p = 805739333247041586  # Pink
-    n = 806120964202168350  # Grey (none)
+    r = emojis["r"]
+    o = emojis["o"]
+    y = emojis["y"]
+    g = emojis["g"]
+    b = emojis["b"]
+    m = emojis["m"]
+    p = emojis["p"]
+    n = emojis["n"]
 
 
 class Main:

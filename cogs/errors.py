@@ -1,8 +1,8 @@
 import traceback
 import asyncio
 import discord
+import random
 from discord.ext import commands
-from hashlib import sha256
 from cogs.consts import *
 
 
@@ -37,11 +37,19 @@ class Errors(commands.Cog):
                     color=colours["r"]
                 ))
             else:
-                tb = "```" + ("".join(traceback.format_exception(type(err), err, err.__traceback__))) + "```"
+                code = "".join([random.choice("1234567890ABCDEF") for _ in range(0, 5)])
+                tb = "".join(traceback.format_exception(type(err), err, err.__traceback__))
                 print(f"{C.RedDark}[C] {C.Red}FATAL:\n{tb}{C.c}")
-                return await ctx.send(embed=discord.Embed(
-                    title="Error",
+                tb = "```" + tb + "```"
+                await self.bot.get_channel(812335313174397039).send(embed=discord.Embed(
+                    title=f"Error #{code}",
                     description=tb,
+                    color=Colours.red
+                ))
+                return await ctx.send(embed=discord.Embed(
+                    title="Oops - Thats an error",
+                    description=f"You aren't supposed to see this. "
+                                f"If you want, you can give us more information by giving us the code `{code}` [here](https://discord.gg/bPaNnxe)",
                     color=Colours.red
                 ))
 

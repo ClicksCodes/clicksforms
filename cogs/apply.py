@@ -515,7 +515,7 @@ class Apply(commands.Cog):
 
         application = {
             "meta": {
-                "applicant": ctx.author.id,
+                "applicant": ctx.author.id if not formData["meta"]["anonymous"] else "Anonymous",
                 "duration": f"{time.time() - start} seconds",
                 "channel": ctx.channel.id
             },
