@@ -162,7 +162,7 @@ class Descriptions:
     text = "Please send a text response"
     number = "Please send a number"
     multichoice = "Pick any one from the following choices:"
-    tickbox = f"Pick all that apply from the following choices, then click <:e:{Emojis.tick}>"
+    tickbox = f"Pick all that apply from the following choices, then click <:e:{Emojis.right}>"
     fileupload = "Please send an image or file. Only your first will count."
     date = "Loading..."
     time = "Loading..."
