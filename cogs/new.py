@@ -2,8 +2,9 @@ import discord
 import asyncio
 import copy
 import re
-from datetime import datetime
+import datetime
 from discord.ext import commands
+import calendar
 
 from cogs.consts import *
 
@@ -26,37 +27,157 @@ class New(commands.Cog):
     @commands.guild_only()
     async def create(self, ctx):
         m = await ctx.send(embed=loadingEmbed)
+        # formData = {
+        #     "meta": {
+        #         "type": "form",  # form quiz TODO
+        #         "active": True,  # If users can apply TODO
+        #         "anonymous": False,  # If the applicant is shown TODO
+        #         "guild": ctx.guild.id,  # The server the application is for
+        #         "created_by": ctx.author.id,  # Who made the application
+        #         "name": "New Application",  # The name of the application
+        #         "description": "The default form",  # The description of the form
+        #         "auto_accept": True,  # If the completed roles are given instantly TODO
+        #         "required_roles": [],  # You need these roles to apply TODO
+        #         "disallowed_roles": [],  # You cannot apply with these roles TODO
+        #         "given_roles": [],  # Roles given once accepted TODO
+        #         "removed_roles": [],  # Roles removed once accepted TODO
+        #         "channel_requiremens": {  # Where the form will be completed TODO
+        #             "type": "any"  # any (any channel), created (a channel made for the user), DMs (limited) TODO
+        #             #  The channel it must be run in TODO
+        #             #  The category your channel will be made in TODO
+        #         }
+        #     },
+        #     "questions": [
+        #         {
+        #             "question": True,  # True for question, False for decorations
+        #             "name": "Default question",  # The title of a question
+        #             "description": "The default question for a form",  # The description of a question
+        #             "colour": Colours.orange,  # The colour of the embed
+        #             "type": "text",  # text number multiplechoice tickbox file date time  |  header text image link
+        #             "required": True,  # If the question is required or not TODO
+        #             "question_specific": {}  # Length requirements, validation, multiple choice options... TODO
+        #         }
+        #     ]
+        # }
         formData = {
             "meta": {
-                "type": "form",  # form quiz
-                "active": True,  # If users can apply
-                "anonymous": False,  # If the applicant is shown
-                "invoke": "apply",  # The command to apply
-                "guild": ctx.guild.id,  # The server the application is for
-                "created_by": ctx.author.id,  # Who made the application
-                "name": "New Application",  # The name of the application
-                "description": "The default application",  # The description of the form
-                "required_roles": [],  # You need these roles to apply
-                "disallowed_roles": [],  # You cannot apply with these roles
-                "given_roles": [],  # Roles given once accepted
-                "removed_roles": []  # Roles removed once accepted
+                "type": "form",
+                "active": False,
+                "anonymous": False,
+                "invoke": "apply",
+                "guild": 805408534145531935,
+                "created_by": 438733159748599813,
+                "name": "New Application",
+                "description": "The default application",
+                "required_roles": [], "disallowed_roles": [], "given_roles": [], "removed_roles": []
             },
             "questions": [
                 {
                     "question": True,
-                    "name": "Default question",  # The title of a question
-                    "description": "The default question for an application",  # The description of a question
-                    "colour": Colours.orange,  # The colour of the embed
-                    "type": "text",  # text number multiplechoice tickbox file date time  |  header text image link
-                    "required": True,  # If the question is required or not
-                    "question_specific": {}  # Length requirements, validation, multiple choice options...
+                    "name": "Default question",
+                    "description": "The default question for an application",
+                    "colour": 15051633,
+                    "type": "text",
+                    "required": True,
+                    "question_specific": {}
+                },
+                {
+                    "question": False,
+                    "name": "a",
+                    "description": "b",
+                    "colour": 13421772,
+                    "type": "special_section"
+                },
+                {
+                    "question": True,
+                    "name": "pick a number",
+                    "description": "anything will do",
+                    "colour": "ffff00",
+                    "type": "number",
+                    "required": True,
+                    "question_specific": {}
+                },
+                {
+                    "question": False,
+                    "description": "god damn text",
+                    "colour": "F27878",
+                    "type": "special_text"
+                },
+                {
+                    "question": True,
+                    "name": "pick",
+                    "description": "plz",
+                    "colour": "0000ff",
+                    "type": "multichoice",
+                    "required": True,
+                    "question_specific": {
+                        805737834098065408: "option 1",
+                        805737834069622814: "option 2",
+                        805737834136731658: "option 3",
+                        805737833792536597: "option 4"
+                    }
+                },
+                {
+                    "question": False,
+                    "name": "aaaaaaaaa",
+                    "caption": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
+                    "url": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
+                    "colour": 64206, "type": "special_image"
+                },
+                {
+                    "question": True,
+                    "name": "pick all",
+                    "description": "definitely not based on eek",
+                    "colour": "ff00ff",
+                    "type": "tickbox",
+                    "required": True,
+                    "question_specific": {
+                        805737834098065408: "programmer",
+                        805737834069622814: "dead inside",
+                        805737834136731658: "asexual",
+                        805737833792536597: "wears bubble wrap on head"
+                    }
+                },
+                {
+                    "question": False,
+                    "name": "meme",
+                    "text": "check out this meme",
+                    "url": "https://cdn.discordapp.com/attachments/755427300073275445/803712856070946866/image0.png",
+                    "colour": "A358B2",
+                    "type": "special_link"
+                },
+                {
+                    "question": True,
+                    "name": "upload your soul",
+                    "description": "gotta do it or pay up",
+                    "colour": "ff8800",
+                    "type": "fileupload",
+                    "required": True,
+                    "question_specific": {}
+                },
+                {
+                    "question": True,
+                    "name": "when do you want to die",
+                    "description": "or else",
+                    "colour": "2c2f33",
+                    "type": "date",
+                    "required": True,
+                    "question_specific": {}
+                },
+                {
+                    "question": True,
+                    "name": "when",
+                    "description": "time",
+                    "colour": "72aef1",
+                    "type": "time",
+                    "required": True,
+                    "question_specific": {}
                 }
             ]
         }
 
         while True:
-            desc = f"**Description:**\n> {formData['meta']['description']}\n"
-            desc += f"**Command to apply:** `{ctx.prefix}{formData['meta']['invoke']}`\n\n"
+            desc = f"**Description:**\n> {formData['meta']['description']}\n\n"
 
             desc += f"{self.bot.get_emoji(Emojis.main.new)} New question\n" \
                     f"{self.bot.get_emoji(Emojis.main.remove)} Remove question\n" \
@@ -73,8 +194,8 @@ class New(commands.Cog):
 
             x = 0
             for question in formData['questions']:
+                x += 1
                 if question['question']:
-                    x += 1
                     embed.add_field(
                         name=f"{self.bot.get_emoji(getattr(Emojis.types, question['type']))} {x}. {str(question['name'])[:200]}",
                         value=str(question['description'])[:1000],
@@ -82,7 +203,7 @@ class New(commands.Cog):
                     )
                 else:
                     embed.add_field(
-                        name=f"{self.bot.get_emoji(getattr(Emojis.types, question['type']))} Decoration",
+                        name=f"{self.bot.get_emoji(getattr(Emojis.types, question['type']))} {x}. Decoration",
                         value=str(question['type'])[8:].capitalize(),
                         inline=True
                     )
@@ -102,9 +223,9 @@ class New(commands.Cog):
             try:
                 done, pending = await asyncio.wait(
                     [
-                        self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
-                        self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
-                        self.bot.wait_for('message', timeout=120, check=lambda message: message.author.id == ctx.author.id)
+                        self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                        self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                        self.bot.wait_for('message', timeout=300, check=lambda message: message.author.id == ctx.author.id)
                     ],
                     return_when=asyncio.FIRST_COMPLETED
                 )
@@ -144,7 +265,250 @@ class New(commands.Cog):
                     break
 
             elif isinstance(response, discord.message.Message):
-                pass
+                await response.delete()
+                try:
+                    q = int(response.content) - 1
+                    qs = len(formData["questions"])
+                    if 0 <= q < qs:
+                        qs = formData["questions"]
+                        colour = qs[q]['colour']
+
+                        if qs[q]["type"] == "special_section":
+                            while True:
+                                if type(colour) == str:
+                                    colour = int(colour, 16)
+                                await m.edit(embed=discord.Embed(
+                                    title=f"{self.bot.get_emoji(Emojis.decorations.header)} {qs[q]['name']}",
+                                    description=f"> {qs[q]['description']}\n"
+                                                f"**Colour:** #{str(hex(colour))[2:]}\n\n"
+                                                f"{self.bot.get_emoji(Emojis.left)} Back\n"
+                                                f"{self.bot.get_emoji(Emojis.features.title)} Edit title\n"
+                                                f"{self.bot.get_emoji(Emojis.features.description)} Edit description\n"
+                                                f"{self.bot.get_emoji(Emojis.features.colour)} Edit colour",
+                                    color=colour
+                                ))
+                                await m.clear_reactions()
+                                for r in [Emojis.left, Emojis.features.title, Emojis.features.description, Emojis.features.colour]:
+                                    await m.add_reaction(self.bot.get_emoji(r))
+                                try:
+                                    reaction = await self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: (
+                                        emoji.message.id == m.id and user.id == ctx.author.id
+                                    ))
+                                except asyncio.TimeoutError:
+                                    break
+
+                                name = reaction[0].emoji.name.lower()
+                                await m.clear_reactions()
+                                if name == "left":
+                                    break
+                                elif name == "qtitle":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the name of the section?",
+                                        "This is the text at the top of the section. Type `cancel` to cancel.",
+                                        ctx.author
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["name"] = text
+                                elif name == "qdescription":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the description of the section?",
+                                        "This is the text that appears under the section name. Type `cancel` to cancel.",
+                                        ctx.author,
+                                        required=False
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["description"] = text
+                                elif name == "qcolour":
+                                    colour = await self.getColour(m, ctx.author)
+                                    if not colour:
+                                        continue
+                                    formData['questions'][q]["colour"] = colour
+                        elif qs[q]["type"] == "special_text":
+                            while True:
+                                if type(colour) == str:
+                                    colour = int(colour, 16)
+                                await m.edit(embed=discord.Embed(
+                                    title=f"{self.bot.get_emoji(Emojis.decorations.text)} Text",
+                                    description=f"> {qs[q]['description']}\n"
+                                                f"**Colour:** #{str(hex(colour))[2:]}\n\n"
+                                                f"{self.bot.get_emoji(Emojis.left)} Back\n"
+                                                f"{self.bot.get_emoji(Emojis.features.description)} Edit text\n"
+                                                f"{self.bot.get_emoji(Emojis.features.colour)} Edit colour",
+                                    color=colour
+                                ))
+                                await m.clear_reactions()
+                                for r in [Emojis.left, Emojis.features.description, Emojis.features.colour]:
+                                    await m.add_reaction(self.bot.get_emoji(r))
+                                try:
+                                    reaction = await self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: (
+                                        emoji.message.id == m.id and user.id == ctx.author.id
+                                    ))
+                                except asyncio.TimeoutError:
+                                    break
+
+                                name = reaction[0].emoji.name.lower()
+                                await m.clear_reactions()
+                                if name == "left":
+                                    break
+                                elif name == "qdescription":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the text that should be shown?",
+                                        "This is the text that is shown on this decoration. Type `cancel` to cancel.",
+                                        ctx.author
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["description"] = text
+                                elif name == "qcolour":
+                                    colour = await self.getColour(m, ctx.author)
+                                    if not colour:
+                                        continue
+                                    formData['questions'][q]["colour"] = colour
+                        elif qs[q]["type"] == "special_image":
+                            while True:
+                                if type(colour) == str:
+                                    colour = int(colour, 16)
+                                embed = discord.Embed(
+                                    title=f"{self.bot.get_emoji(Emojis.decorations.text)} {qs[q]['name']}",
+                                    description=(
+                                        f"> {qs[q]['caption']}\n"
+                                        f"**Colour:** #{str(hex(colour))[2:]}\n\n"
+                                        f"{self.bot.get_emoji(Emojis.left)} Back\n"
+                                        f"{self.bot.get_emoji(Emojis.features.title)} Edit title\n"
+                                        f"{self.bot.get_emoji(Emojis.features.description)} Edit caption\n"
+                                        f"{self.bot.get_emoji(Emojis.features.changeimg)} Edit image\n"
+                                        f"{self.bot.get_emoji(Emojis.features.colour)} Edit colour"
+                                    ),
+                                    color=colour
+                                )
+                                embed.set_image(url=qs[q]['url'])
+                                await m.edit(embed=embed)
+                                await m.clear_reactions()
+                                for r in [Emojis.left, Emojis.features.title, Emojis.features.description, Emojis.features.changeimg, Emojis.features.colour]:
+                                    await m.add_reaction(self.bot.get_emoji(r))
+                                try:
+                                    reaction = await self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: (
+                                        emoji.message.id == m.id and user.id == ctx.author.id
+                                    ))
+                                except asyncio.TimeoutError:
+                                    break
+
+                                name = reaction[0].emoji.name.lower()
+                                await m.clear_reactions()
+                                if name == "left":
+                                    break
+                                elif name == "qtitle":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the title of the image?",
+                                        "This is the text that is shown on the top of the embed. Type `cancel` to cancel.",
+                                        ctx.author
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["name"] = text
+                                elif name == "qdescription":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the image caption?",
+                                        "This is the text that is shown above the image. Type `cancel` to cancel.",
+                                        ctx.author,
+                                        required=False
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["caption"] = text
+                                elif name == "changeimage":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the image URL?",
+                                        "This is the URL of the image you want to show. Type `cancel` to cancel.",
+                                        ctx.author,
+                                        url=True
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["url"] = text
+                                elif name == "qcolour":
+                                    colour = await self.getColour(m, ctx.author)
+                                    if not colour:
+                                        continue
+                                    formData['questions'][q]["colour"] = colour
+                        elif qs[q]["type"] == "special_link":
+                            while True:
+                                if type(colour) == str:
+                                    colour = int(colour, 16)
+                                await m.edit(embed=discord.Embed(
+                                    title=f"{self.bot.get_emoji(Emojis.decorations.text)} {qs[q]['name']}",
+                                    description=(
+                                        f"> {qs[q]['text']} (Links to <{qs[q]['url']}>)\n"
+                                        f"**Colour:** #{str(hex(colour))[2:]}\n\n"
+                                        f"{self.bot.get_emoji(Emojis.left)} Back\n"
+                                        f"{self.bot.get_emoji(Emojis.features.title)} Edit title\n"
+                                        f"{self.bot.get_emoji(Emojis.features.description)} Edit text\n"
+                                        f"{self.bot.get_emoji(Emojis.features.changeurl)} Edit url\n"
+                                        f"{self.bot.get_emoji(Emojis.features.colour)} Edit colour"
+                                    ),
+                                    color=colour
+                                ))
+                                await m.clear_reactions()
+                                for r in [Emojis.left, Emojis.features.title, Emojis.features.description, Emojis.features.changeurl, Emojis.features.colour]:
+                                    await m.add_reaction(self.bot.get_emoji(r))
+                                try:
+                                    reaction = await self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: (
+                                        emoji.message.id == m.id and user.id == ctx.author.id
+                                    ))
+                                except asyncio.TimeoutError:
+                                    break
+
+                                name = reaction[0].emoji.name.lower()
+                                await m.clear_reactions()
+                                if name == "left":
+                                    break
+                                elif name == "qtitle":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the title?",
+                                        "This is the text that is shown on the top of the embed. Type `cancel` to cancel.",
+                                        ctx.author
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["name"] = text
+                                elif name == "qdescription":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the url text?",
+                                        "This is the text that you click to open the link. Type `cancel` to cancel.",
+                                        ctx.author,
+                                        required=False
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["text"] = text
+                                elif name == "changeurl":
+                                    text = await self.getText(
+                                        m,
+                                        f"{self.bot.get_emoji(Emojis.features.title)} What is the URL?",
+                                        "This is the link the user is going to click. Type `cancel` to cancel.",
+                                        ctx.author,
+                                        url=True
+                                    )
+                                    if not text:
+                                        continue
+                                    formData['questions'][q]["url"] = text
+                                elif name == "qcolour":
+                                    colour = await self.getColour(m, ctx.author)
+                                    if not colour:
+                                        continue
+                                    formData['questions'][q]["colour"] = colour
+                except ValueError:
+                    pass
 
         await m.clear_reactions()
         await m.edit(embed=discord.Embed(
@@ -156,7 +520,8 @@ class New(commands.Cog):
     async def editMeta(self, m, ctx, formData):
         while True:
             desc = f"**Title:** {formData['meta']['name']}\n" \
-                   f"**Description:**\n> {formData['meta']['description']}\n"
+                   f"**Description:**\n> {formData['meta']['description']}\n" \
+                   f"**Show applicant:** {'yes' if formData['meta']['anonymous'] else 'no'}"
             await m.clear_reactions()
             for r in [
                 Emojis.left,
@@ -172,8 +537,8 @@ class New(commands.Cog):
             try:
                 done, pending = await asyncio.wait(
                     [
-                        self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
-                        self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
+                        self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                        self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
                     ],
                     return_when=asyncio.FIRST_COMPLETED
                 )
@@ -210,7 +575,8 @@ class New(commands.Cog):
                     m,
                     f"{self.bot.get_emoji(Emojis.features.description)} What should the application description be?",
                     "This is the explanation of the application. Type `cancel` to cancel.",
-                    ctx.author
+                    ctx.author,
+                    required=False
                 )
                 if not text:
                     continue
@@ -250,8 +616,8 @@ class New(commands.Cog):
         try:
             done, pending = await asyncio.wait(
                 [
-                    self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
-                    self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
+                    self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                    self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
                 ],
                 return_when=asyncio.FIRST_COMPLETED
             )
@@ -284,7 +650,8 @@ class New(commands.Cog):
                 m,
                 f"{self.bot.get_emoji(Emojis.features.description)} What should the question description be?",
                 "This is the text that appears below the title to give more information. Type `cancel` to cancel.",
-                ctx.author
+                ctx.author,
+                required=False
             )
             if not desc:
                 return formData
@@ -315,7 +682,8 @@ class New(commands.Cog):
                 m,
                 f"{self.bot.get_emoji(Emojis.features.description)} What should the question description be?",
                 "This is the text that appears below the title to give more information. Type `cancel` to cancel.",
-                ctx.author
+                ctx.author,
+                required=False
             )
             if not desc:
                 return formData
@@ -347,7 +715,8 @@ class New(commands.Cog):
                 m,
                 f"{self.bot.get_emoji(Emojis.features.description)} What should the question description be?",
                 "This is the text that appears below the title to give more information. Type `cancel` to cancel.",
-                ctx.author
+                ctx.author,
+                required=False
             )
             if not desc:
                 return formData
@@ -381,7 +750,8 @@ class New(commands.Cog):
                 m,
                 f"{self.bot.get_emoji(Emojis.features.description)} What should the question description be?",
                 "This is the text that appears below the title to give more information. Type `cancel` to cancel.",
-                ctx.author
+                ctx.author,
+                required=False
             )
             if not desc:
                 return formData
@@ -415,7 +785,8 @@ class New(commands.Cog):
                 m,
                 f"{self.bot.get_emoji(Emojis.features.description)} What should the question description be?",
                 "This is the text that appears below the title to give more information. Type `cancel` to cancel.",
-                ctx.author
+                ctx.author,
+                required=False
             )
             if not desc:
                 return formData
@@ -445,7 +816,8 @@ class New(commands.Cog):
                 m,
                 f"{self.bot.get_emoji(Emojis.features.description)} What should the question description be?",
                 "This is the text that appears below the title to give more information. Type `cancel` to cancel.",
-                ctx.author
+                ctx.author,
+                required=False
             )
             if not desc:
                 return formData
@@ -475,7 +847,8 @@ class New(commands.Cog):
                 m,
                 f"{self.bot.get_emoji(Emojis.features.description)} What should the question description be?",
                 "This is the text that appears below the title to give more information. Type `cancel` to cancel.",
-                ctx.author
+                ctx.author,
+                required=False
             )
             if not desc:
                 return formData
@@ -513,8 +886,8 @@ class New(commands.Cog):
                 await m.add_reaction(self.bot.get_emoji(r))
             done, pending = await asyncio.wait(
                 [
-                    self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
-                    self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
+                    self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                    self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
                 ],
                 return_when=asyncio.FIRST_COMPLETED
             )
@@ -546,7 +919,8 @@ class New(commands.Cog):
                         m,
                         f"{self.bot.get_emoji(Emojis.features.description)} What should the section description be?",
                         "This is the text that appears below the section title to give more information. Type `cancel` to cancel.",
-                        ctx.author
+                        ctx.author,
+                        required=False
                     )
                     if not description:
                         return formData
@@ -593,7 +967,8 @@ class New(commands.Cog):
                         m,
                         f"{self.bot.get_emoji(Emojis.features.description)} What should the image caption be?",
                         "This is the text that is shown above the image. Type `cancel` to cancel.",
-                        ctx.author
+                        ctx.author,
+                        required=False
                     )
                     if not description:
                         return formData
@@ -631,7 +1006,8 @@ class New(commands.Cog):
                         m,
                         f"{self.bot.get_emoji(Emojis.features.description)} What should the text say?",
                         "This is the text that can be clicked to open the link. Type `cancel` to cancel.",
-                        ctx.author
+                        ctx.author,
+                        required=False
                     )
                     if not description:
                         return formData
@@ -688,9 +1064,9 @@ class New(commands.Cog):
         reaction = None
         done, pending = await asyncio.wait(
             [
-                self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
-                self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
-                self.bot.wait_for('message', timeout=120, check=lambda message: message.author.id == ctx.author.id)
+                self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                self.bot.wait_for('message', timeout=300, check=lambda message: message.author.id == ctx.author.id)
             ],
             return_when=asyncio.FIRST_COMPLETED
         )
@@ -724,23 +1100,27 @@ class New(commands.Cog):
         await m.clear_reactions()
         return formData
 
-    async def getText(self, m, title, desc, usr, url=False):
+    async def getText(self, m, title, desc, usr, url=False, required=True):
+        if not required:
+            desc += f"\nClick {self.bot.get_emoji(Emojis.tick)} to skip this step"
         await m.edit(embed=discord.Embed(
             title=title,
             description=desc,
             color=Colours.green
         ))
-        await m.add_reaction(self.bot.get_emoji(805431640402034750))
+        await m.add_reaction(self.bot.get_emoji(Emojis.cross))
+        if not required:
+            await m.add_reaction(self.bot.get_emoji(Emojis.tick))
         url = not url
 
         done, pending = await asyncio.wait(
             [
-                self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
-                self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
-                self.bot.wait_for('message', timeout=120, check=lambda message: (
+                self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
+                self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
+                self.bot.wait_for('message', timeout=300, check=lambda message: (
                     message.author.id == usr.id and (
                         url or
-                        bool(re.match(r"^(http(s)?:\/\/)([[a-zA-Z0-9\-]{3,}).([a-zA-Z.]{2,})(\/([^\n]*)?)?$", message.content))
+                        bool(re.match(r"^(http(s)?:\/\/)([a-zA-Z0-9\-]{3,}).([a-zA-Z.]{2,})(\/([^\n]*)?)?$", message.content))
                     )
                 ))
             ],
@@ -764,6 +1144,8 @@ class New(commands.Cog):
 
         if isinstance(response, tuple):
             await m.clear_reactions()
+            if response[0].emoji.name == "Tick":
+                return "_ _"
             return None
 
         if isinstance(response, discord.message.Message):
@@ -790,9 +1172,9 @@ class New(commands.Cog):
 
         done, pending = await asyncio.wait(
             [
-                self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
-                self.bot.wait_for('reaction_remove', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
-                self.bot.wait_for('message', timeout=120, check=lambda message: message.author.id == usr.id and bool(re.match(r"^(#|0x)?([0-9a-fA-F]{6})$", message.content)))
+                self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
+                self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == usr.id),
+                self.bot.wait_for('message', timeout=300, check=lambda message: message.author.id == usr.id and bool(re.match(r"^(#|0x)?([0-9a-fA-F]{6})$", message.content)))
             ],
             return_when=asyncio.FIRST_COMPLETED
         )
@@ -879,7 +1261,7 @@ class New(commands.Cog):
                 color=Colours.purple
             ))
             try:
-                response = await self.bot.wait_for('reaction_add', timeout=120, check=lambda emoji, user: emoji.message.id == m.id and user.id == author.id),
+                response = await self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == author.id),
             except asyncio.TimeoutError:
                 await m.clear_reactions()
                 break
@@ -903,7 +1285,7 @@ class New(commands.Cog):
                 color=Colours.purple
             ))
             try:
-                response = await self.bot.wait_for('message', timeout=120, check=lambda message: message.author.id == author.id),
+                response = await self.bot.wait_for('message', timeout=300, check=lambda message: message.author.id == author.id),
             except asyncio.TimeoutError:
                 await m.clear_reactions()
                 break
