@@ -138,7 +138,7 @@ class Apply(commands.Cog):
         #         }
         #     ]
         # }
-        formData = {'meta': {'type': 'form', 'active': False, 'anonymous': False, 'guild': 684492926528651336, 'created_by': 438733159748599813, 'name': 'New Application', 'description': 'The default form', 'auto_accept': True, 'required_roles': [785902485088370750], 'disallowed_roles': [760901551496626187], 'given_roles': [762687733482520647], 'removed_roles': [762687733482520647], 'channel_requiremens': {'type': 'any'}}, 'questions': [{'question': True, 'name': 'Default question', 'description': 'The default question for a form', 'colour': 15051633, 'type': 'text', 'required': True, 'question_specific': {}}]}
+        formData = {'meta': {'type': 'form', 'active': False, 'anonymous': False, 'guild': 684492926528651336, 'created_by': 438733159748599813, 'name': 'New Application', 'description': 'The default form', 'auto_accept': True, 'required_roles': [], 'disallowed_roles': [], 'given_roles': [], 'removed_roles': [], 'channel_requiremens': {'type': 'any'}}, 'questions': [{'question': True, 'name': 'Default question', 'description': 'The default question for a form', 'colour': 15051633, 'type': 'text', 'required': True, 'question_specific': {}}]}
 
         if formData['meta']['guild'] != ctx.guild.id:
             return
@@ -549,6 +549,19 @@ class Apply(commands.Cog):
             color=Colours.orange
         ))
         await ctx.send(str(application))
+
+        if formData['meta']['auto_accept']:
+            for role in formData['meta']['given_roles']:
+                try:
+                    await ctx.author.add_roles(ctx.guild.get_role(role), reason="ClicksForms Completed")
+                except discord.errors.Forbidden:
+                    pass
+
+            for role in formData['meta']['removed_roles']:
+                try:
+                    await ctx.author.remove_roles(ctx.guild.get_role(role), reason="ClicksForms Completed")
+                except discord.errors.Forbidden:
+                    pass
 
     async def get_response(
                 self,

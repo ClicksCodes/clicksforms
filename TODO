@@ -1,6 +1,5 @@
 1 Help message
 1 Selecting where a form is completed
-1 give roles after completing a form
 DB Exclusive
     1 Actually save forms to a DB
     1 View all responses
@@ -17,3 +16,4 @@ Calendar border doesn't match final number
 Calendar does not show if a question is required
 Better error handler
 Required, disallowed roles, auto accept
+Give roles after completing a form
