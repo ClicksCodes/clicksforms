@@ -14,16 +14,6 @@ class New(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def ping(self, ctx):
-        m = await ctx.send(embed=loadingEmbed)
-        time = m.created_at - ctx.message.created_at
-        await m.edit(content=None, embed=discord.Embed(
-            title=f"Ping",
-            description=f"Latency is: `{int(time.microseconds / 1000)}ms`",
-            color=Colours.blue)
-        )
-
-    @commands.command()
     @commands.guild_only()
     async def create(self, ctx):
         m = await ctx.send(embed=loadingEmbed)
@@ -896,18 +886,21 @@ class New(commands.Cog):
     async def editMeta(self, m, ctx, formData):
         skipClear = False
         while True:
-            anonemoji = (Emojis.features.anon if not formData["meta"]["anonymous"] else Emojis.features.nanon)
+            anonemoji = (Emojis.features.anon if formData["meta"]["anonymous"] else Emojis.features.nanon)
             desc = f"{self.bot.get_emoji(Emojis.features.title)} **Title:** {formData['meta']['name']}\n" \
                    f"{self.bot.get_emoji(Emojis.features.description)} **Description:**\n> {formData['meta']['description']}\n" \
-                   f"{self.bot.get_emoji(anonemoji)} **Show applicant:** {'yes' if formData['meta']['anonymous'] else 'no'}"
+                   f"{self.bot.get_emoji(Emojis.roles.roles)} **Roles**\n" \
+                   f"{self.bot.get_emoji(anonemoji)} **Show applicant:** {'no' if formData['meta']['anonymous'] else 'yes'}"
             if skipClear:
                 skipClear = False
+                await m.add_reaction(self.bot.get_emoji(anonemoji))
             else:
                 await m.clear_reactions()
                 for r in [
                     Emojis.left,
                     Emojis.features.title,
                     Emojis.features.description,
+                    Emojis.roles.roles,
                     anonemoji
                 ]:
                     await m.add_reaction(self.bot.get_emoji(r))
@@ -941,7 +934,9 @@ class New(commands.Cog):
             name = response.emoji.name.lower()
             if "anon" in name:
                 await m.remove_reaction(response.emoji, ctx.author)
+                await m.remove_reaction(response.emoji, ctx.me)
                 formData['meta']['anonymous'] = not formData['meta']['anonymous']
+                skipClear = True
                 continue
             await m.clear_reactions()
             if name == "left":
@@ -967,6 +962,147 @@ class New(commands.Cog):
                 if not text:
                     continue
                 formData['meta']['description'] = text
+            elif name == "roles":
+                await m.clear_reactions()
+                skipClear = False
+                while True:
+                    if not skipClear:
+                        for r in [
+                            Emojis.left,
+                            Emojis.roles.given,
+                            Emojis.roles.removed,
+                            Emojis.roles.required,
+                            Emojis.roles.disallowed,
+                            (Emojis.roles.roles if formData["meta"]["auto_accept"] else Emojis.roles.noauto)
+                        ]:
+                            await m.add_reaction(self.bot.get_emoji(r))
+                    else:
+                        skipClear = False
+                        await m.add_reaction(self.bot.get_emoji(Emojis.roles.roles if formData["meta"]["auto_accept"] else Emojis.roles.noauto))
+                    givenstr = "".join([ctx.guild.get_role(r).mention for r in formData['meta']['given_roles']])
+                    removedstr = "".join([ctx.guild.get_role(r).mention for r in formData['meta']['removed_roles']])
+                    requiredstr = "".join([ctx.guild.get_role(r).mention for r in formData['meta']['required_roles']])
+                    disallowedstr = "".join([ctx.guild.get_role(r).mention for r in formData['meta']['disallowed_roles']])
+                    if givenstr == "":
+                        givenstr = "*None*"
+                    if removedstr == "":
+                        removedstr = "*None*"
+                    if requiredstr == "":
+                        requiredstr = "*None*"
+                    if disallowedstr == "":
+                        disallowedstr = "*None*"
+                    await m.edit(embed=discord.Embed(
+                        title=f"{self.bot.get_emoji(Emojis.roles.roles)} Role settings",
+                        description=f"{self.bot.get_emoji(Emojis.roles.given)} Given when form is completed\n"
+                                    f"> {givenstr}\n"
+                                    f"{self.bot.get_emoji(Emojis.roles.removed)} Removed when form is completed\n"
+                                    f"> {removedstr}\n"
+                                    f"{self.bot.get_emoji(Emojis.roles.required)} Required for a form to be completed\n"
+                                    f"> {requiredstr}\n"
+                                    f"{self.bot.get_emoji(Emojis.roles.disallowed)} Cannot complete this form if you have these roles\n"
+                                    f"> {disallowedstr}\n"
+                                    f"{self.bot.get_emoji(Emojis.roles.roles if formData['meta']['auto_accept'] else Emojis.roles.noauto)} "
+                                    f"{'Add or remove roles once form is completed' if formData['meta']['auto_accept'] else 'Only add or remove roles once accepted'}",
+                        color=Colours.green
+                    ))
+                    try:
+                        done, pending = await asyncio.wait(
+                            [
+                                self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                                self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
+                            ],
+                            return_when=asyncio.FIRST_COMPLETED
+                        )
+                    except asyncio.TimeoutError:
+                        return formData
+
+                    try:
+                        reaction = copy.copy(done)
+                        response, _ = reaction.pop().result()
+                    except asyncio.TimeoutError:
+                        return formData
+
+                    for future in done:
+                        future.exception()
+                    for future in pending:
+                        future.cancel()
+
+                    name = response.emoji.name.lower()
+                    await m.remove_reaction(response.emoji, ctx.author)
+                    if name == "left":
+                        await m.clear_reactions()
+                        break
+                    elif name in ["roles", "rolesnoauto"]:
+                        formData['meta']['auto_accept'] = not formData['meta']['auto_accept']
+                        await m.remove_reaction(response.emoji, ctx.me)
+                        skipClear = True
+                    else:
+                        await m.clear_reactions()
+                        applyto = ""
+                        if name == "given":
+                            applyto = 0
+                        elif name == "removed":
+                            applyto = 1
+                        elif name == "required":
+                            applyto = 2
+                        elif name == "disallowed":
+                            applyto = 3
+
+                        await m.add_reaction(self.bot.get_emoji(Emojis.tick))
+                        pickedRoles = []
+                        status = "s"
+                        failed = "That role could not be found and was not addded\n"
+                        while True:
+                            await m.edit(embed=discord.Embed(
+                                title="Enter your roles",
+                                description=f"You can enter the name, ID, or mention of the role you want to add. Case sensitive.\n{failed if status == 'f' else ''}"
+                                            f"{', '.join([ctx.guild.get_role(r).mention for r in pickedRoles])}",
+                                color=Colours.green if status == "s" else Colours.red
+                            ))
+                            done, pending = await asyncio.wait(
+                                [
+                                    self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                                    self.bot.wait_for('message', timeout=300, check=lambda message: message.author.id == ctx.author.id)
+                                ],
+                                return_when=asyncio.FIRST_COMPLETED
+                            )
+
+                            try:
+                                reaction = copy.copy(done)
+                                response, _ = reaction.pop().result()
+                                response = response[0]
+                            except TypeError:
+                                response = next(iter(done)).result()
+                            except asyncio.TimeoutError:
+                                pickedRoles = "CANCEL"
+                                break
+
+                            for future in done:
+                                future.exception()
+                            for future in pending:
+                                future.cancel()
+
+                            if isinstance(response, tuple):
+                                break
+
+                            if isinstance(response, discord.message.Message):
+                                try:
+                                    await response.delete()
+                                    r = await commands.RoleConverter().convert(response, response.content)
+                                    pickedRoles.append(r.id)
+                                    status = "s"
+                                except discord.ext.commands.errors.RoleNotFound:
+                                    status = "f"
+                        await m.clear_reactions()
+                        if applyto == 0:
+                            formData['meta']['given_roles'] = pickedRoles
+                        elif applyto == 1:
+                            formData['meta']['removed_roles'] = pickedRoles
+                        elif applyto == 2:
+                            formData['meta']['required_roles'] = pickedRoles
+                        elif applyto == 3:
+                            formData['meta']['disallowed_roles'] = pickedRoles
+                await m.clear_reactions()
 
     async def newQuestion(self, m, ctx, formData):
         await m.clear_reactions()

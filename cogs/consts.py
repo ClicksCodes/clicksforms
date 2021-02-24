@@ -54,8 +54,8 @@ class Features:
     changeimg = emojis["changeimg"]
     changeurl = emojis["changeurl"]
 
-    anon = 812326537255845950
-    nanon = 812326537449701406
+    anon = emojis["anon"]
+    nanon = emojis["nanon"]
 
 
 class Responses:
@@ -88,11 +88,20 @@ class Main:
 
 
 class Question:
-    valid = 812255889611554837  # Validation (green)
-    nvalid = 812255889276665910  # No validation (red)
-    required = 812255889796890644  # Required (green)
-    nrequired = 812255889439850506  # Not required (red)
-    options = 812255889691508786  # Change options (multichoice)
+    valid = emojis["valid"]  # Validation (green)
+    nvalid = emojis["nvalid"]  # No validation (red)
+    required = emojis["required"]  # Required (green)
+    nrequired = emojis["nrequired"]  # Not required (red)
+    options = emojis["options"]  # Change options (multichoice)
+
+
+class Roles:
+    roles = emojis["roles"]["roles"]
+    noauto = emojis["roles"]["noauto"]
+    given = emojis["roles"]["given"]
+    removed = emojis["roles"]["removed"]
+    required = emojis["roles"]["required"]
+    disallowed = emojis["roles"]["disallowed"]
 
 
 class Emojis:
@@ -103,46 +112,9 @@ class Emojis:
     responses = Responses
     colours = Colours
     question = Question
+    roles = Roles
 
-    calendar = {
-        1:  "<:e:811929465194020906>",
-        2:  "<:e:811929465423790110>",
-        3:  "<:e:811929465197428737>",
-        4:  "<:e:811929465605193728>",
-        5:  "<:e:811929465134645309>",
-        6:  "<:e:811929465541623859>",
-        7:  "<:e:811929465583435806>",
-        8:  "<:e:811929465680035881>",
-        9:  "<:e:811929465680035840>",
-        10: "<:e:811929465659719720>",
-        11: "<:e:811929465817923584>",
-        12: "<:e:811929465542148097>",
-        13: "<:e:811929465750945832>",
-        14: "<:e:811929465974292500>",
-        15: "<:e:811929465793150976>",
-        16: "<:e:811929465764446238>",
-        17: "<:e:811929465818447882>",
-        18: "<:e:811929465776766978>",
-        19: "<:e:811929465734955049>",
-        20: "<:e:811929466074824724>",
-        21: "<:e:811929465927368704>",
-        22: "<:e:811929465931300875>",
-        23: "<:e:811929466065780776>",
-        24: "<:e:811929466057523240>",
-        25: "<:e:811929466318225438>",
-        26: "<:e:811929466326614036>",
-        27: "<:e:811929466330808340>",
-        28: "<:e:811929466438942780>",
-        29: "<:e:811929466363707412>",
-        30: "<:e:811929466388480000>",
-        31: "<:e:811929466241679401>",
-        "M": "<:e:811929465960661014>",
-        "T": "<:e:811929465755533314>",
-        "W": "<:e:811929466234077194>",
-        "F": "<:e:811929466330284032>",
-        "S": "<:e:811929466280476712>",
-        "B": "<:e:811929466033012736>"
-    }
+    calendar = emojis["calendar"]
 
     left = emojis['left']
     right = emojis['right']
