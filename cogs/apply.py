@@ -41,108 +41,137 @@ class Apply(commands.Cog):
             "questions": [
                 {
                     "question": True,
-                    "name": "Default question",
-                    "description": "The default question for an application",
-                    "colour": 15051633,
-                    "type": "text",
-                    "required": True,
-                    "question_specific": {}
-                },
-                {
-                    "question": False,
-                    "name": "a",
-                    "description": "b",
-                    "colour": 13421772,
-                    "type": "special_section"
-                },
-                {
-                    "question": True,
-                    "name": "pick a number",
-                    "description": "anything will do",
-                    "colour": "ffff00",
-                    "type": "number",
-                    "required": True,
-                    "question_specific": {}
-                },
-                {
-                    "question": False,
-                    "description": "god damn text",
-                    "colour": "F27878",
-                    "type": "special_text"
-                },
-                {
-                    "question": True,
-                    "name": "pick",
-                    "description": "plz",
-                    "colour": "0000ff",
-                    "type": "multichoice",
-                    "required": True,
-                    "question_specific": {
-                        805737834098065408: "option 1",
-                        805737834069622814: "option 2",
-                        805737834136731658: "option 3",
-                        805737833792536597: "option 4"
-                    }
-                },
-                {
-                    "question": False,
-                    "name": "aaaaaaaaa",
-                    "caption": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
-                    "url": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
-                    "colour": 64206,
-                    "type": "special_image"
-                },
-                {
-                    "question": True,
-                    "name": "pick all",
-                    "description": "definitely not based on eek",
-                    "colour": "ff00ff",
-                    "type": "tickbox",
-                    "required": True,
-                    "question_specific": {
-                        805737834098065408: "programmer",
-                        805737834069622814: "dead inside",
-                        805737834136731658: "asexual",
-                        805737833792536597: "wears bubble wrap on head"
-                    }
-                },
-                {
-                    "question": False,
-                    "name": "meme",
-                    "text": "check out this meme",
-                    "url": "https://cdn.discordapp.com/attachments/755427300073275445/803712856070946866/image0.png",
-                    "colour": "A358B2",
-                    "type": "special_link"
-                },
-                {
-                    "question": True,
                     "name": "upload your soul",
                     "description": "gotta do it or pay up",
                     "colour": "ff8800",
                     "type": "fileupload",
                     "required": False,
                     "question_specific": {}
-                },
-                {
-                    "question": True,
-                    "name": "when do you want to die",
-                    "description": "or else",
-                    "colour": "2c2f33",
-                    "type": "date",
-                    "required": True,
-                    "question_specific": {}
-                },
-                {
-                    "question": True,
-                    "name": "when",
-                    "description": "time",
-                    "colour": "72aef1",
-                    "type": "time",
-                    "required": True,
-                    "question_specific": {}
                 }
             ]
         }
+        # formData = {
+        #     "meta": {
+        #         "type": "form",
+        #         "active": False,
+        #         "anonymous": False,
+        #         "invoke": "apply",
+        #         "guild": 684492926528651336,
+        #         "created_by": 438733159748599813,
+        #         "name": "New Application",
+        #         "description": "The default application",
+        #         "required_roles": [], "disallowed_roles": [], "given_roles": [], "removed_roles": [],
+        #         "auto_accept": True,
+        #         "channel_requirements": {
+        #             "type": "category",
+        #             "category": 814412475280916550
+        #         }
+        #     },
+        #     "questions": [
+        #         {
+        #             "question": True,
+        #             "name": "Default question",
+        #             "description": "The default question for an application",
+        #             "colour": 15051633,
+        #             "type": "text",
+        #             "required": True,
+        #             "question_specific": {}
+        #         },
+        #         {
+        #             "question": False,
+        #             "name": "a",
+        #             "description": "b",
+        #             "colour": 13421772,
+        #             "type": "special_section"
+        #         },
+        #         {
+        #             "question": True,
+        #             "name": "pick a number",
+        #             "description": "anything will do",
+        #             "colour": "ffff00",
+        #             "type": "number",
+        #             "required": True,
+        #             "question_specific": {}
+        #         },
+        #         {
+        #             "question": False,
+        #             "description": "god damn text",
+        #             "colour": "F27878",
+        #             "type": "special_text"
+        #         },
+        #         {
+        #             "question": True,
+        #             "name": "pick",
+        #             "description": "plz",
+        #             "colour": "0000ff",
+        #             "type": "multichoice",
+        #             "required": True,
+        #             "question_specific": {
+        #                 805737834098065408: "option 1",
+        #                 805737834069622814: "option 2",
+        #                 805737834136731658: "option 3",
+        #                 805737833792536597: "option 4"
+        #             }
+        #         },
+        #         {
+        #             "question": False,
+        #             "name": "aaaaaaaaa",
+        #             "caption": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
+        #             "url": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
+        #             "colour": 64206,
+        #             "type": "special_image"
+        #         },
+        #         {
+        #             "question": True,
+        #             "name": "pick all",
+        #             "description": "definitely not based on eek",
+        #             "colour": "ff00ff",
+        #             "type": "tickbox",
+        #             "required": True,
+        #             "question_specific": {
+        #                 805737834098065408: "programmer",
+        #                 805737834069622814: "dead inside",
+        #                 805737834136731658: "asexual",
+        #                 805737833792536597: "wears bubble wrap on head"
+        #             }
+        #         },
+        #         {
+        #             "question": False,
+        #             "name": "meme",
+        #             "text": "check out this meme",
+        #             "url": "https://cdn.discordapp.com/attachments/755427300073275445/803712856070946866/image0.png",
+        #             "colour": "A358B2",
+        #             "type": "special_link"
+        #         },
+        #         {
+        #             "question": True,
+        #             "name": "upload your soul",
+        #             "description": "gotta do it or pay up",
+        #             "colour": "ff8800",
+        #             "type": "fileupload",
+        #             "required": False,
+        #             "question_specific": {}
+        #         },
+        #         {
+        #             "question": True,
+        #             "name": "when do you want to die",
+        #             "description": "or else",
+        #             "colour": "2c2f33",
+        #             "type": "date",
+        #             "required": True,
+        #             "question_specific": {}
+        #         },
+        #         {
+        #             "question": True,
+        #             "name": "when",
+        #             "description": "time",
+        #             "colour": "72aef1",
+        #             "type": "time",
+        #             "required": True,
+        #             "question_specific": {}
+        #         }
+        #     ]
+        # }
 
         if formData['meta']['guild'] != ctx.guild.id:
             return
@@ -351,7 +380,7 @@ class Apply(commands.Cog):
                     await m.clear_reactions()
                     responses.append(reacted)
                 elif question['type'] == "fileupload":
-                    t, out = await self.get_response(m, ctx, required=question["required"], mcheck=lambda message: (
+                    t, out = await self.get_response(m, ctx, delete=False, required=question["required"], mcheck=lambda message: (
                                 message.author.id == ctx.author.id and
                                 len(message.attachments) >= 1
                             ))
@@ -370,7 +399,25 @@ class Apply(commands.Cog):
                             await m.clear_reactions()
                             break
                         else:
-                            responses.append(out.attachments[0].url)
+                            f = await out.attachments[0].to_file()
+                            if out.attachments[0].size > 8388608:
+                                await out.delete()
+                                await m.edit(embed=discord.Embed(
+                                    title="Upload failed",
+                                    description="Your file was too big",
+                                    color=Colours.red
+                                ))
+                                responses.append("/File too big/")
+                                await asyncio.sleep(3)
+                                continue
+                            await m.edit(embed=discord.Embed(
+                                title="Uploading your file",
+                                description="Please give us a moment to upload your file",
+                                color=Colours.green
+                            ))
+                            message = await self.bot.get_channel(814433925542969416).send(file=f)
+                            responses.append(message.attachments[0].url)
+                            await out.delete()
                             continue
                 elif question['type'] == "date":
                     now = datetime.datetime.now()
@@ -599,6 +646,7 @@ class Apply(commands.Cog):
                 m,
                 ctx,
                 mcheck=False,
+                delete=True,
                 rcheck=False,
                 required=True
             ):
@@ -643,7 +691,8 @@ class Apply(commands.Cog):
                 return ("Special", "/Skipped/")
             return ("Emoji", reponse[0])
         else:
-            await response.delete()
+            if delete:
+                await response.delete()
             return ("Message", response)
 
 

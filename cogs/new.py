@@ -1187,6 +1187,9 @@ class New(commands.Cog):
                     if name == "anywhere":
                         formData['meta']['channel_requirements'] = {"type": "any"}
                         skipClear = True
+                    elif name == "left":
+                        await m.clear_reactions()
+                        break
                     elif name == "formcat":
                         await m.clear_reactions()
                         await m.add_reaction(self.bot.get_emoji(Emojis.cross))
@@ -1278,7 +1281,8 @@ class New(commands.Cog):
                             for c in split:
                                 try:
                                     channel = await commands.TextChannelConverter().convert(ctx, c)
-                                    channels.append(channel.id)
+                                    if channel.guild.id == ctx.guild.id:
+                                        channels.append(channel.id)
                                 except discord.ext.commands.errors.ChannelNotFound:
                                     pass
                             formData['meta']['channel_requirements'] = {"type": ('inclusive' if name == "channelwl" else 'exclusive'), "channels": channels}

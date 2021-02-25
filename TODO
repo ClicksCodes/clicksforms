@@ -1,6 +1,5 @@
 1 Actually save forms to a DB
 1 View all responses
-1 Make file upload work
 
 2 Completing forms online
 
@@ -18,3 +17,4 @@ Give roles after completing a form
 Selecting where a form is completed
 Only allow forms to be completed in the chosen place
 Help message
+Make file upload work
