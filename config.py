@@ -6,5 +6,6 @@ cogs = [
     "cogs.ping",
 
     "cogs.new",
-    "cogs.apply"
+    "cogs.apply",
+    "cogs.core"
 ]

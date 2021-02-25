@@ -13,16 +13,6 @@ class Ping(commands.Cog):
     def _signal_handler(self, *_) -> None:
         shutdown_event.set()
 
-    @commands.command()
-    async def ping(self, ctx):
-        m = await ctx.send(embed=loadingEmbed)
-        time = m.created_at - ctx.message.created_at
-        await m.edit(content=None, embed=discord.Embed(
-            title=f"Ping",
-            description=f"Latency is: `{int(time.microseconds / 1000)}ms`",
-            color=Colours.blue)
-        )
-
     @commands.Cog.listener()
     async def on_ready(self):
         if self.bot.runningPing:
