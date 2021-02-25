@@ -21,126 +21,136 @@ class Apply(commands.Cog):
     @commands.Command
     @commands.guild_only()
     async def apply(self, ctx):
-        # formData = {
-        #     "meta": {
-        #         "type": "form",
-        #         "active": False,
-        #         "anonymous": False,
-        #         "invoke": "apply",
-        #         "guild": 805408534145531935,
-        #         "created_by": 438733159748599813,
-        #         "name": "New Application",
-        #         "description": "The default application",
-        #         "required_roles": [], "disallowed_roles": [], "given_roles": [], "removed_roles": []
-        #     },
-        #     "questions": [
-        #         {
-        #             "question": True,
-        #             "name": "Default question",
-        #             "description": "The default question for an application",
-        #             "colour": 15051633,
-        #             "type": "text",
-        #             "required": True,
-        #             "question_specific": {}
-        #         },
-        #         {
-        #             "question": False,
-        #             "name": "a",
-        #             "description": "b",
-        #             "colour": 13421772,
-        #             "type": "special_section"
-        #         },
-        #         {
-        #             "question": True,
-        #             "name": "pick a number",
-        #             "description": "anything will do",
-        #             "colour": "ffff00",
-        #             "type": "number",
-        #             "required": True,
-        #             "question_specific": {}
-        #         },
-        #         {
-        #             "question": False,
-        #             "description": "god damn text",
-        #             "colour": "F27878",
-        #             "type": "special_text"
-        #         },
-        #         {
-        #             "question": True,
-        #             "name": "pick",
-        #             "description": "plz",
-        #             "colour": "0000ff",
-        #             "type": "multichoice",
-        #             "required": True,
-        #             "question_specific": {
-        #                 805737834098065408: "option 1",
-        #                 805737834069622814: "option 2",
-        #                 805737834136731658: "option 3",
-        #                 805737833792536597: "option 4"
-        #             }
-        #         },
-        #         {
-        #             "question": False,
-        #             "name": "aaaaaaaaa",
-        #             "caption": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
-        #             "url": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
-        #             "colour": 64206,
-        #             "type": "special_image"
-        #         },
-        #         {
-        #             "question": True,
-        #             "name": "pick all",
-        #             "description": "definitely not based on eek",
-        #             "colour": "ff00ff",
-        #             "type": "tickbox",
-        #             "required": True,
-        #             "question_specific": {
-        #                 805737834098065408: "programmer",
-        #                 805737834069622814: "dead inside",
-        #                 805737834136731658: "asexual",
-        #                 805737833792536597: "wears bubble wrap on head"
-        #             }
-        #         },
-        #         {
-        #             "question": False,
-        #             "name": "meme",
-        #             "text": "check out this meme",
-        #             "url": "https://cdn.discordapp.com/attachments/755427300073275445/803712856070946866/image0.png",
-        #             "colour": "A358B2",
-        #             "type": "special_link"
-        #         },
-        #         {
-        #             "question": True,
-        #             "name": "upload your soul",
-        #             "description": "gotta do it or pay up",
-        #             "colour": "ff8800",
-        #             "type": "fileupload",
-        #             "required": False,
-        #             "question_specific": {}
-        #         },
-        #         {
-        #             "question": True,
-        #             "name": "when do you want to die",
-        #             "description": "or else",
-        #             "colour": "2c2f33",
-        #             "type": "date",
-        #             "required": True,
-        #             "question_specific": {}
-        #         },
-        #         {
-        #             "question": True,
-        #             "name": "when",
-        #             "description": "time",
-        #             "colour": "72aef1",
-        #             "type": "time",
-        #             "required": True,
-        #             "question_specific": {}
-        #         }
-        #     ]
-        # }
-        formData = {'meta': {'type': 'form', 'active': False, 'anonymous': False, 'guild': 684492926528651336, 'created_by': 438733159748599813, 'name': 'New Application', 'description': 'The default form', 'auto_accept': True, 'required_roles': [], 'disallowed_roles': [], 'given_roles': [], 'removed_roles': [], 'channel_requiremens': {'type': 'any'}}, 'questions': [{'question': True, 'name': 'Default question', 'description': 'The default question for a form', 'colour': 15051633, 'type': 'text', 'required': True, 'question_specific': {}}]}
+        formData = {
+            "meta": {
+                "type": "form",
+                "active": False,
+                "anonymous": False,
+                "invoke": "apply",
+                "guild": 684492926528651336,
+                "created_by": 438733159748599813,
+                "name": "New Application",
+                "description": "The default application",
+                "required_roles": [], "disallowed_roles": [], "given_roles": [], "removed_roles": [],
+                "auto_accept": True,
+                "channel_requirements": {
+                    "type": "category",
+                    "category": 814412475280916550
+                }
+            },
+            "questions": [
+                {
+                    "question": True,
+                    "name": "Default question",
+                    "description": "The default question for an application",
+                    "colour": 15051633,
+                    "type": "text",
+                    "required": True,
+                    "question_specific": {}
+                },
+                {
+                    "question": False,
+                    "name": "a",
+                    "description": "b",
+                    "colour": 13421772,
+                    "type": "special_section"
+                },
+                {
+                    "question": True,
+                    "name": "pick a number",
+                    "description": "anything will do",
+                    "colour": "ffff00",
+                    "type": "number",
+                    "required": True,
+                    "question_specific": {}
+                },
+                {
+                    "question": False,
+                    "description": "god damn text",
+                    "colour": "F27878",
+                    "type": "special_text"
+                },
+                {
+                    "question": True,
+                    "name": "pick",
+                    "description": "plz",
+                    "colour": "0000ff",
+                    "type": "multichoice",
+                    "required": True,
+                    "question_specific": {
+                        805737834098065408: "option 1",
+                        805737834069622814: "option 2",
+                        805737834136731658: "option 3",
+                        805737833792536597: "option 4"
+                    }
+                },
+                {
+                    "question": False,
+                    "name": "aaaaaaaaa",
+                    "caption": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
+                    "url": "https://media.discordapp.net/attachments/755427300073275445/803712856070946866/image0.png?width=617&height=670",
+                    "colour": 64206,
+                    "type": "special_image"
+                },
+                {
+                    "question": True,
+                    "name": "pick all",
+                    "description": "definitely not based on eek",
+                    "colour": "ff00ff",
+                    "type": "tickbox",
+                    "required": True,
+                    "question_specific": {
+                        805737834098065408: "programmer",
+                        805737834069622814: "dead inside",
+                        805737834136731658: "asexual",
+                        805737833792536597: "wears bubble wrap on head"
+                    }
+                },
+                {
+                    "question": False,
+                    "name": "meme",
+                    "text": "check out this meme",
+                    "url": "https://cdn.discordapp.com/attachments/755427300073275445/803712856070946866/image0.png",
+                    "colour": "A358B2",
+                    "type": "special_link"
+                },
+                {
+                    "question": True,
+                    "name": "upload your soul",
+                    "description": "gotta do it or pay up",
+                    "colour": "ff8800",
+                    "type": "fileupload",
+                    "required": False,
+                    "question_specific": {}
+                },
+                {
+                    "question": True,
+                    "name": "when do you want to die",
+                    "description": "or else",
+                    "colour": "2c2f33",
+                    "type": "date",
+                    "required": True,
+                    "question_specific": {}
+                },
+                {
+                    "question": True,
+                    "name": "when",
+                    "description": "time",
+                    "colour": "72aef1",
+                    "type": "time",
+                    "required": True,
+                    "question_specific": {}
+                }
+            ]
+        }
 
         if formData['meta']['guild'] != ctx.guild.id:
+            return
+
+        completedin = formData['meta']['channel_requirements']['type']
+        if completedin == "exclusive" and ctx.channel.id in formData['meta']['channel_requirements']['channels']:
+            return
+        if completedin == "inclusive" and ctx.channel.id not in formData['meta']['channel_requirements']['channels']:
             return
 
         failedFor = [[], []]
@@ -165,9 +175,25 @@ class Apply(commands.Cog):
                 color=Colours.orange
             ))
 
+        c = ctx.channel
+
+        if completedin == "category":
+            c = await ctx.guild.create_text_channel(
+                name=str(ctx.author.display_name),
+                topic=str(ctx.author.id),
+                category=ctx.guild.get_channel(int(formData['meta']['channel_requirements']['category']))
+            )
+            await c.set_permissions(ctx.author, view_channel=True, send_messages=True)
+            message = await c.send(f"<@{ctx.author.id}>")
+            await ctx.send(embed=discord.Embed(
+                title="A channel was created",
+                description=f"You can jump to the channel [here]({message.jump_url}), or just open {c.mention}",
+                color=Colours.green
+            ))
+
         question_len = len([q for q in formData['questions'] if q['question']])
 
-        m = await ctx.send(embed=discord.Embed(
+        m = await c.send(embed=discord.Embed(
             title=f"{formData['meta']['name']}",
             description=f"> {formData['meta']['description']}\n"
                         f"Questions: {question_len}\n\n"
@@ -309,7 +335,7 @@ class Apply(commands.Cog):
                         await m.clear_reactions()
                         responses.append("/Skipped/")
                         continue
-                    message = await ctx.channel.fetch_message(m.id)
+                    message = await c.fetch_message(m.id)
                     reacted = []
                     for r in message.reactions:
                         if (
@@ -539,16 +565,21 @@ class Apply(commands.Cog):
             "meta": {
                 "applicant": ctx.author.id if not formData["meta"]["anonymous"] else "Anonymous",
                 "duration": f"{time.time() - start} seconds",
-                "channel": ctx.channel.id
+                "channel": c.id
             },
             "responses": responses
         }
+        if formData['meta']['channel_requirements']['type'] == "category":
+            selfdelete = ". This channel will be deleted in 3 seconds."
         await m.edit(embed=discord.Embed(
             title=f"Application completed",
-            description=f"Your application was submitted successfully",
+            description=f"Your application was submitted successfully{selfdelete or ''}",
             color=Colours.orange
         ))
         await ctx.send(str(application))
+        if formData['meta']['channel_requirements']['type'] == "category":
+            await asyncio.sleep(3)
+            await c.delete()
 
         if formData['meta']['auto_accept']:
             for role in formData['meta']['given_roles']:

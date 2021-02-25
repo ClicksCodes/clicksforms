@@ -104,6 +104,13 @@ class Roles:
     disallowed = emojis["roles"]["disallowed"]
 
 
+class Channels:
+    channelwl = emojis["channelWl"]
+    channelbl = emojis["channelBl"]
+    formCat = emojis["formCat"]
+    anywhere = emojis["anywhere"]
+
+
 class Emojis:
     types = Types
     decorations = Decorations
@@ -113,6 +120,7 @@ class Emojis:
     colours = Colours
     question = Question
     roles = Roles
+    channels = Channels
 
     calendar = emojis["calendar"]
 

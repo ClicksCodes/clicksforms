@@ -1,5 +1,4 @@
 1 Help message
-1 Selecting where a form is completed
 DB Exclusive
     1 Actually save forms to a DB
     1 View all responses
@@ -17,3 +16,5 @@ Calendar does not show if a question is required
 Better error handler
 Required, disallowed roles, auto accept
 Give roles after completing a form
+Selecting where a form is completed
+Only allow forms to be completed in the chosen place

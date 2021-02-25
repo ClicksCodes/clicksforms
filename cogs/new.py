@@ -31,7 +31,7 @@ class New(commands.Cog):
                 "disallowed_roles": [],  # You cannot apply with these roles TODO
                 "given_roles": [],  # Roles given once accepted TODO
                 "removed_roles": [],  # Roles removed once accepted TODO
-                "channel_requiremens": {  # Where the form will be completed TODO
+                "channel_requirements": {  # Where the form will be completed TODO
                     "type": "any"  # any (any channel), created (a channel made for the user), DMs (limited) TODO
                     #  The channel it must be run in TODO
                     #  The category your channel will be made in TODO
@@ -887,9 +887,20 @@ class New(commands.Cog):
         skipClear = False
         while True:
             anonemoji = (Emojis.features.anon if formData["meta"]["anonymous"] else Emojis.features.nanon)
+            completedin = ""
+            if formData['meta']['channel_requirements']['type'] == "any":
+                completedin = "Anywhere"
+            elif formData['meta']['channel_requirements']['type'] == "inclusive":
+                completedin = "Specific channels"
+            elif formData['meta']['channel_requirements']['type'] == "exclusive":
+                completedin = "Outside certain channels"
+            elif formData['meta']['channel_requirements']['type'] == "category":
+                completedin = "A new channel for every user, in a category"
+
             desc = f"{self.bot.get_emoji(Emojis.features.title)} **Title:** {formData['meta']['name']}\n" \
                    f"{self.bot.get_emoji(Emojis.features.description)} **Description:**\n> {formData['meta']['description']}\n" \
                    f"{self.bot.get_emoji(Emojis.roles.roles)} **Roles**\n" \
+                   f"{self.bot.get_emoji(Emojis.channels.channelwl)} **Completed:** {completedin}\n" \
                    f"{self.bot.get_emoji(anonemoji)} **Show applicant:** {'no' if formData['meta']['anonymous'] else 'yes'}"
             if skipClear:
                 skipClear = False
@@ -901,6 +912,7 @@ class New(commands.Cog):
                     Emojis.features.title,
                     Emojis.features.description,
                     Emojis.roles.roles,
+                    Emojis.channels.channelwl,
                     anonemoji
                 ]:
                     await m.add_reaction(self.bot.get_emoji(r))
@@ -1103,6 +1115,174 @@ class New(commands.Cog):
                         elif applyto == 3:
                             formData['meta']['disallowed_roles'] = pickedRoles
                 await m.clear_reactions()
+            elif name == "channelwl":
+                await m.clear_reactions()
+                skipClear = False
+                while True:
+                    if not skipClear:
+                        for r in [
+                            Emojis.left,
+                            Emojis.channels.anywhere,
+                            Emojis.channels.channelwl,
+                            Emojis.channels.channelbl,
+                            Emojis.channels.formCat
+                        ]:
+                            await m.add_reaction(self.bot.get_emoji(r))
+                    else:
+                        skipClear = False
+                    completedin = ""
+                    s1, s2, s3, s4 = "", "", "", ""
+                    if formData['meta']['channel_requirements']['type'] == "any":
+                        completedin = "This form can be completed in any channel"
+                        s1 = ">"
+                    elif formData['meta']['channel_requirements']['type'] == "inclusive":
+                        completedin = "This form can only be completed in the following channels:\n" \
+                            f"> {', '.join([ctx.guild.get_channel(c).mention for c in formData['meta']['channel_requirements']['channels']])}"
+                        s2 = ">"
+                    elif formData['meta']['channel_requirements']['type'] == "exclusive":
+                        completedin = "This form can only be completed in any channel except the following:\n" \
+                            f"> {', '.join([ctx.guild.get_channel(c).mention for c in formData['meta']['channel_requirements']['channels']])}"
+                        s3 = ">"
+                    elif formData['meta']['channel_requirements']['type'] == "category":
+                        completedin = "A new channel will be created for each user who applies inside the " \
+                            f"{ctx.guild.get_channel(formData['meta']['channel_requirements']['category']).name} category"
+                        s4 = ">"
+
+                    await m.edit(embed=discord.Embed(
+                        title=f"{self.bot.get_emoji(Emojis.channels.channelwl)} Channel settings",
+                        description=f"{completedin}\n\n"
+                                    f"{s1} {self.bot.get_emoji(Emojis.channels.anywhere)} Allow completion anywhere\n"
+                                    f"{s2} {self.bot.get_emoji(Emojis.channels.channelwl)} Only allow in certain channels\n"
+                                    f"{s3} {self.bot.get_emoji(Emojis.channels.channelbl)} Allow outside certain channels\n"
+                                    f"{s4} {self.bot.get_emoji(Emojis.channels.formCat)} Create a channel in a category",
+                        color=Colours.green
+                    ))
+                    try:
+                        done, pending = await asyncio.wait(
+                            [
+                                self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                                self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id)
+                            ],
+                            return_when=asyncio.FIRST_COMPLETED
+                        )
+                    except asyncio.TimeoutError:
+                        break
+
+                    try:
+                        reaction = copy.copy(done)
+                        response, _ = reaction.pop().result()
+                    except asyncio.TimeoutError:
+                        break
+
+                    for future in done:
+                        future.exception()
+                    for future in pending:
+                        future.cancel()
+
+                    name = response.emoji.name.lower()
+                    try:
+                        await m.remove_reaction(response.emoji, ctx.author)
+                    except discord.errors.Forbidden:
+                        pass
+                    if name == "anywhere":
+                        formData['meta']['channel_requirements'] = {"type": "any"}
+                        skipClear = True
+                    elif name == "formcat":
+                        await m.clear_reactions()
+                        await m.add_reaction(self.bot.get_emoji(Emojis.cross))
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.bot.get_emoji(Emojis.channels.channelwl)} Channel settings",
+                            description=f"Which category should be used? You can use its name or ID",
+                            color=Colours.green
+                        ))
+                        done, pending = await asyncio.wait(
+                            [
+                                self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                                self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                                self.bot.wait_for('message', timeout=300, check=lambda message: (
+                                    message.author.id == ctx.author.id
+                                ))
+                            ],
+                            return_when=asyncio.FIRST_COMPLETED
+                        )
+
+                        try:
+                            reaction = copy.copy(done)
+                            response, _ = reaction.pop().result()
+                            response = response[0]
+                        except TypeError:
+                            response = next(iter(done)).result()
+                        except asyncio.TimeoutError:
+                            await m.clear_reactions()
+                            return None
+
+                        for future in done:
+                            future.exception()
+                        for future in pending:
+                            future.cancel()
+
+                        if isinstance(response, tuple):
+                            await m.clear_reactions()
+                            formData['meta']['channel_requirements'] = {"type": "any"}
+
+                        if isinstance(response, discord.message.Message):
+                            await response.delete()
+                            try:
+                                r = await commands.CategoryChannelConverter().convert(ctx, response.content)
+                                formData['meta']['channel_requirements'] = {"type": "category", "category": r.id}
+                            except discord.ext.commands.errors.ChannelNotFound:
+                                formData['meta']['channel_requirements'] = {"type": "any"}
+                            await m.clear_reactions()
+                    else:
+                        await m.clear_reactions()
+                        await m.add_reaction(self.bot.get_emoji(Emojis.cross))
+                        await m.edit(embed=discord.Embed(
+                            title=f"{self.bot.get_emoji(Emojis.channels.channelwl)} Channel settings",
+                            description=f"Which channels should the form {'not ' if name == 'channelbl' else ''}be completed in?\nEach channel should be separated by a space.",
+                            color=Colours.green
+                        ))
+                        done, pending = await asyncio.wait(
+                            [
+                                self.bot.wait_for('reaction_add', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                                self.bot.wait_for('reaction_remove', timeout=300, check=lambda emoji, user: emoji.message.id == m.id and user.id == ctx.author.id),
+                                self.bot.wait_for('message', timeout=300, check=lambda message: (
+                                    message.author.id == ctx.author.id
+                                ))
+                            ],
+                            return_when=asyncio.FIRST_COMPLETED
+                        )
+
+                        try:
+                            reaction = copy.copy(done)
+                            response, _ = reaction.pop().result()
+                            response = response[0]
+                        except TypeError:
+                            response = next(iter(done)).result()
+                        except asyncio.TimeoutError:
+                            await m.clear_reactions()
+                            return None
+
+                        for future in done:
+                            future.exception()
+                        for future in pending:
+                            future.cancel()
+
+                        if isinstance(response, tuple):
+                            await m.clear_reactions()
+                            formData['meta']['channel_requirements'] = {"type": "any"}
+
+                        if isinstance(response, discord.message.Message):
+                            await response.delete()
+                            split = response.content.split(" ")
+                            channels = []
+                            for c in split:
+                                try:
+                                    channel = await commands.TextChannelConverter().convert(ctx, c)
+                                    channels.append(channel.id)
+                                except discord.ext.commands.errors.ChannelNotFound:
+                                    pass
+                            formData['meta']['channel_requirements'] = {"type": ('inclusive' if name == "channelwl" else 'exclusive'), "channels": channels}
+                            await m.clear_reactions()
 
     async def newQuestion(self, m, ctx, formData):
         await m.clear_reactions()
