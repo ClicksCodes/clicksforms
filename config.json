@@ -1,0 +1,17 @@
+{
+    "token": "ODA1MzkyMDU0Njc4MTkyMTY5.YBaNzQ._eUCo0Lu3GL6ngARcquFDhKSNcc",
+    "token-dev": "ODA1MzkyMDU0Njc4MTkyMTY5.YBaNzQ._eUCo0Lu3GL6ngARcquFDhKSNcc",
+
+    "cogs": [
+        "jishaku",
+        "cogs.new",
+        "cogs.apply",
+        "cogs.responses"
+    ],
+
+    "colour-dev": "Pink",
+    "colour": "Cyan",
+
+    "prefixes": [">"],
+    "prefixes-dev": ["t>"]
+}
