@@ -1,1 +1,3 @@
 *.pyc
+main.db
+addSlash.py
