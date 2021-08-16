@@ -154,8 +154,7 @@ class New(commands.Cog):
             "given_roles": [],
             "removed_roles": [],
             "auto_accept": False,
-            "questions": [],
-            "responses": []
+            "questions": []
         }
         while True:
             v = self.handlers.createUI(ctx, [
@@ -330,7 +329,10 @@ class New(commands.Cog):
                     self.bot.wait_for(
                         "message",
                         timeout=300,
-                        check=lambda message: message.content.isdigit() and message.author == ctx.author and message.channel.id == ctx.channel.id
+                        check=lambda message:
+                            (message.content.isdigit() or (message.content[0] == "-" and len(message.content) > 1 and message.content[1:].isdigit())) and
+                            message.author == ctx.author and
+                            message.channel.id == ctx.channel.id
                     ),
                     v.wait()
                 ],
@@ -517,7 +519,7 @@ class New(commands.Cog):
 
     async def newNumber(self, m, ctx, data, default=None):
         question = default or {"type": "number", "title": "", "description": "", "colour": "red",
-        "options": {"min": 1, "max": 2000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+        "options": {"min": 1, "max": 1000000000000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]

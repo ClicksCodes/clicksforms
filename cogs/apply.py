@@ -220,7 +220,7 @@ class Apply(commands.Cog):
                     title=question["title"],
                     description=question["description"],
                     color=getattr(self.colours, question["colour"])
-                ).set_footer(text="Send a text response"), view=v)
+                ).set_footer(text=f"Send a text response | Length: {question['options']['min']} to {question['options']['max']}"), view=v)
                 try:
                     done, pending = await asyncio.wait(
                         [
@@ -260,7 +260,7 @@ class Apply(commands.Cog):
                     title=question["title"],
                     description=question["description"],
                     color=getattr(self.colours, question["colour"])
-                ).set_footer(text="Send a number response"), view=v)
+                ).set_footer(text=f"Send a number response | Size: {question['options']['min']} to {question['options']['max']}"), view=v)
                 try:
                     done, pending = await asyncio.wait(
                         [
