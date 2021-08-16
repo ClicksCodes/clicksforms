@@ -1,6 +1,4 @@
 import discord
-from discord.mentions import A
-from sqlalchemy.sql.expression import true
 from cogs.consts import *
 import databases
 import orm
@@ -8,6 +6,7 @@ import sqlalchemy
 
 database = databases.Database("sqlite:///main.db")
 metadata = sqlalchemy.MetaData()
+
 
 class GuildData(orm.Model):
     __tablename__ = "data"

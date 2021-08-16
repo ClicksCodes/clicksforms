@@ -47,7 +47,7 @@ class Apply(commands.Cog):
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction):
-        if not "type" in interaction.data:
+        if "type" not in interaction.data:
             return
         if interaction.data["type"] == 2 and interaction.guild:
             if interaction.data["name"] == "Ask to complete form":

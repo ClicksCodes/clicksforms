@@ -29,7 +29,6 @@ class Errors(commands.Cog):
             pass
 
     async def _on_error(self, ctx, error):
-        Colours = consts.Colours
         try:
             # Normal Green
             # Warning Yellow

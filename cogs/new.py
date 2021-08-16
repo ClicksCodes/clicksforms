@@ -444,7 +444,7 @@ class New(commands.Cog):
 
     async def newText(self, m, ctx, data, default=None):
         question = default or {"type": "text", "title": "", "description": "", "colour": "red",
-            "options": {"min": 1, "max": 2000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {"min": 1, "max": 2000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -504,7 +504,7 @@ class New(commands.Cog):
 
     async def newNumber(self, m, ctx, data, default=None):
         question = default or {"type": "number", "title": "", "description": "", "colour": "red",
-        "options": {"min": 1, "max": 1000000000000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {"min": 1, "max": 1000000000000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -621,11 +621,13 @@ class New(commands.Cog):
             elif v.selected == "re":
                 question["required"] = not question["required"]
             elif v.selected == "mi":
-                i = await self.NumberInput(ctx, m, "Minimum choices", "What should the minimum of choices be?", optional=False, min_size=0, max_size=min(len(options), question["options"]["max"]))
+                i = await self.NumberInput(ctx, m, "Minimum choices", "What should the minimum of choices be?",
+                                           optional=False, min_size=0, max_size=min(len(options), question["options"]["max"]))
                 if i:
                     question["options"]["min"] = i
             elif v.selected == "ma":
-                i = await self.NumberInput(ctx, m, "Maximum choices", "What should the maximum amount of choices be?", optional=False, min_size=max(1, question["options"]["min"]), max_size=25)
+                i = await self.NumberInput(ctx, m, "Maximum choices", "What should the maximum amount of choices be?",
+                                           optional=False, min_size=max(1, question["options"]["min"]), max_size=25)
                 if i:
                     question["options"]["max"] = i
             elif v.selected == "ao":
@@ -712,7 +714,7 @@ class New(commands.Cog):
 
     async def newFileUpload(self, m, ctx, data, default=None):
         question = default or {"type": "fileupload", "title": "", "description": "", "colour": "red",
-        "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -761,7 +763,7 @@ class New(commands.Cog):
 
     async def newTime(self, m, ctx, data, default=None):
         question = default or {"type": "time", "title": "", "description": "", "colour": "red",
-            "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -810,7 +812,7 @@ class New(commands.Cog):
 
     async def newDate(self, m, ctx, data, default=None):
         question = default or {"type": "date", "title": "", "description": "", "colour": "red",
-            "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]

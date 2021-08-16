@@ -59,7 +59,11 @@ class Responses(commands.Cog):
             o = []
             for form in forms:
                 if form["id"] in responses:
-                    o.append(discord.SelectOption(value=form["id"], label=form["name"], description=str(len(responses[form["id"]])) + " response" + ("s" if len(responses[form["id"]]) > 1 else "")))
+                    o.append(discord.SelectOption(
+                        value=form["id"],
+                        label=form["name"],
+                        description=str(len(responses[form["id"]])) + " response" + ("s" if len(responses[form["id"]]) > 1 else "")
+                    ))
                 else:
                     o.append(discord.SelectOption(value=form["id"], label=form["name"], description="0 responses"))
             v = self.handlers.createUI(ctx, [
@@ -117,20 +121,22 @@ class Responses(commands.Cog):
                 questions = [q for q in form["questions"] if q["question"]]
                 o = []
                 for i, q in enumerate(questions):
-                    o.append(discord.SelectOption(value=str(i), label=q["title"], description=q["description"], emoji=self.bot.get_emoji(getattr(self.emojis(idOnly=True).question, q["type"]))))
+                    o.append(
+                        discord.SelectOption(value=str(i), label=q["title"], description=q["description"],
+                                             emoji=self.bot.get_emoji(getattr(self.emojis(idOnly=True).question, q["type"]))))
                 while True:
                     question = max(0, min(len(questions) - 1, question))
                     applicant = max(0, min(len(responses) - 1, applicant))
                     v = self.handlers.createUI(ctx, [
                         self.handlers.Button(cb="ba", style="danger", label="Back", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.left)),
                         self.handlers.Button(cb="pq", style="primary", label="Previous question", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.back),
-                            disabled=(question == 0)),
+                                             disabled=(question == 0)),
                         self.handlers.Button(cb="nq", style="primary", label="Next question", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.forward),
-                            disabled=(question == len(questions) - 1)),
+                                             disabled=(question == len(questions) - 1)),
                         self.handlers.Button(cb="pa", style="secondary", label="Previous response", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.left),
-                            disabled=(applicant == 0)),
+                                             disabled=(applicant == 0)),
                         self.handlers.Button(cb="na", style="secondary", label="Next response", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.right),
-                            disabled=(applicant == len(responses) - 1)),
+                                             disabled=(applicant == len(responses) - 1)),
                         self.handlers.Button(cb="dr", style="danger", label="Delete response", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.cross)),
                         self.handlers.Button(cb="ex", style="success", label="Export responses", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.tick)),
                         self.handlers.Select(id="q", placeholder="Jump to question...", options=o, autoaccept=True)
@@ -152,8 +158,11 @@ class Responses(commands.Cog):
                                     f"**Description:**\n> {questions[question]['description']}\n\n"
                                     f"**Answer:**\n{q}",
                         color=self.colours.purple
-                    ).set_footer(text=f"Question {question + 1} of {len(questions)} - Response {applicant + 1} of {len(responses)}"
-                    ).set_thumbnail(url=("https://example.com" if isinstance(validators.url(q[2:]), validators.ValidationFailure) else q[2:])), view=v)
+                    ).set_footer(
+                        text=f"Question {question + 1} of {len(questions)} - Response {applicant + 1} of {len(responses)}"
+                    ).set_thumbnail(
+                        url=("https://example.com" if isinstance(validators.url(q[2:]), validators.ValidationFailure) else q[2:])
+                    ), view=v)
                     await v.wait()
                     if "q" in v.dropdowns:
                         question = int(v.dropdowns["q"][0])
@@ -251,8 +260,10 @@ class Responses(commands.Cog):
 
     async def exportCSV(self, questions, responsedata):
         out = self.usableFormat(questions, responsedata)
+
         def replace(r):
             return str(r).replace('"', '\\"')
+
         string = "\n".join([",".join([f'"{replace(answer)}"' for answer in r]) for r in out])
         buf = io.BytesIO(string.encode("utf-8"))
         buf.seek(0)
@@ -260,8 +271,10 @@ class Responses(commands.Cog):
 
     async def exportMD(self, questions, responsedata):
         out = self.usableFormat(questions, responsedata)
+
         def replace(r):
             return str(r).replace('|', '\\|')
+
         string = ["|".join([f'{replace(answer)}' for answer in r]) for r in out]
         string = (string[0]) + "\n" + ("|".join(["-" for _ in range(len(questions) + 2)])) + "\n" + ("\n".join(string[1:]))
         buf = io.BytesIO(string.encode("utf-8"))
@@ -270,8 +283,10 @@ class Responses(commands.Cog):
 
     async def exportHTML(self, questions, responsedata):
         out = self.usableFormat(questions, responsedata)
+
         def replace(r):
             return str(r).replace('<', '&lt;').replace('>', '&gt;')
+
         string = [[f'{replace(answer)}' for answer in r] for r in out]
         headers = string[0]
         rows = string[1:]
@@ -332,6 +347,7 @@ class Responses(commands.Cog):
         buf = io.BytesIO(string.encode("utf-8"))
         buf.seek(0)
         return buf, "json"
+
 
 def setup(bot):
     bot.add_cog(Responses(bot))
