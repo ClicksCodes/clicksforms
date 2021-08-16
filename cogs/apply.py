@@ -1,3 +1,4 @@
+from functools import reduce
 import discord
 from discord.ext import commands
 import asyncio
@@ -6,19 +7,6 @@ import datetime
 
 from cogs.consts import *
 from cogs import handlers
-
-
-class CustomCTX:
-    def __init__(self, bot, author, guild, channel, message=None):
-        self.bot = bot
-        self.author = author
-        self.guild = guild
-        self.message = message
-        self.channel = channel
-
-    async def delete(self):
-        if self.message:
-            await self.message.delete()
 
 
 class Apply(commands.Cog):
@@ -39,7 +27,7 @@ class Apply(commands.Cog):
                 description="Make sure `@everyone` has permission to use custom emojis to use this command"
             ))
         m = await ctx.send(embed=loading_embed)
-        ctx = CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message)
+        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message)
         await self._apply(ctx, m)
 
     async def sendNotification(self, interaction, ctx, choice, guildData):
@@ -70,9 +58,9 @@ class Apply(commands.Cog):
                         description="You need the `manage_roles` permission to ask someone to complete a form",
                         color=self.colours.red
                     ), ephemeral=True)
-                ctx = CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel)
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
+                ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
                 data = await self.db.get(ctx.guild.id)
                 guildData = data.data
                 choice = -1
@@ -118,7 +106,6 @@ class Apply(commands.Cog):
                     color=self.colours.green
                 ), view=None)
                 await asyncio.create_task(self.sendNotification(interaction, ctx, choice, guildData))
-
         elif interaction.type.name == "application_command" and interaction.guild:
             if interaction.data["name"] == "apply":
                 if not interaction.guild.get_role(interaction.guild.default_role.id).permissions.external_emojis:
@@ -128,7 +115,7 @@ class Apply(commands.Cog):
                     ), ephemeral=True)
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
-                ctx = CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel)
+                ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
                 await self._apply(ctx, m)
             elif interaction.data["name"] == "accept":
                 if not interaction.guild.get_role(interaction.guild.default_role.id).permissions.external_emojis:
@@ -139,7 +126,7 @@ class Apply(commands.Cog):
                     ), ephemeral=True)
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
-                ctx = CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel)
+                ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
                 if str(interaction.user.id) in self.bot.requests:
                     await self._apply(ctx, m, choice=self.bot.requests[str(interaction.user.id)])
                 else:
@@ -197,7 +184,7 @@ class Apply(commands.Cog):
             await v.wait()
             if v.selected:
                 if v.selected == "ca":
-                    return
+                    return await ctx.delete()
                 break
             elif v.dropdowns:
                 choice = int(v.dropdowns["form"][0])

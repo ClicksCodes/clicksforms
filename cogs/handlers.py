@@ -102,3 +102,24 @@ def createUI(ctx, items, alwaysAccept=False):
     for item in items:
         v.add_item(item)
     return v
+
+
+class CustomCTX:
+    def __init__(self, bot, author, guild, channel, message=None, interaction=None, m=None):
+        self.bot = bot
+        self.author = author
+        self.guild = guild
+        self.message = message
+        self.channel = channel
+        self.interaction = interaction
+        self.m = m
+
+    async def delete(self):
+        if self.message:
+            return await self.message.delete()
+        if self.interaction and self.m:
+            return await self.m.edit(embed=discord.Embed(
+                title="Closed",
+                description="Dismiss this message to close it",
+                color=Colours().red
+            ).set_footer(text="Discord does not, in fact, let you delete messages only you can see :/"), view=None)

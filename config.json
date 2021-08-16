@@ -6,7 +6,8 @@
         "jishaku",
         "cogs.new",
         "cogs.apply",
-        "cogs.responses"
+        "cogs.responses",
+        "cogs.errors"
     ],
 
     "colour-dev": "Pink",

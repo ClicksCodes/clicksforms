@@ -9,19 +9,6 @@ from cogs.consts import *
 from cogs import handlers
 
 
-class CustomCTX:
-    def __init__(self, bot, author, guild, channel, message=None):
-        self.bot = bot
-        self.author = author
-        self.guild = guild
-        self.message = message
-        self.channel = channel
-
-    async def delete(self):
-        if self.message:
-            await self.message.delete()
-
-
 class Responses(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -47,7 +34,7 @@ class Responses(commands.Cog):
                 color=self.colours.red
             ))
         m = await ctx.send(embed=loading_embed)
-        ctx = CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message)
+        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message)
         await self._responses(ctx, m, createdBy="message")
 
     @commands.Cog.listener()
@@ -61,7 +48,7 @@ class Responses(commands.Cog):
                     ), ephemeral=True)
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
-                ctx = CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel)
+                ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
                 await self._responses(ctx, m, createdBy="interaction", interaction=interaction)
 
     async def _responses(self, ctx, m, createdBy, interaction=None):
