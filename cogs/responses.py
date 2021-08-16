@@ -225,7 +225,7 @@ class Responses(commands.Cog):
         await n.delete()
 
     def usableFormat(self, questions, responsedata):
-        headers = ["user", "time"]
+        headers = ["User", "Time (Seconds)"]
         responses = []
         headers += [question["title"] for question in questions]
         for r in responsedata:
@@ -327,7 +327,7 @@ class Responses(commands.Cog):
                             answer.append({"name": question["title"], "answer": ", ".join(q[1])})
                         else:
                             answer.append({"name": question["title"], "answer": q[1] or "Skipped"})
-            string.append({"user": user, "time": r["time"], "answers": answer})
+            string.append({"User": user, "Time (Seconds)": r["time"], "answers": answer})
         string = json.dumps(string)
         buf = io.BytesIO(string.encode("utf-8"))
         buf.seek(0)
