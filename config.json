@@ -7,7 +7,8 @@
         "cogs.new",
         "cogs.apply",
         "cogs.responses",
-        "cogs.errors"
+        "cogs.errors",
+        "cogs.help"
     ],
 
     "colour-dev": "Pink",

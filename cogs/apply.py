@@ -31,6 +31,12 @@ class Apply(commands.Cog):
         await self._apply(ctx, m)
 
     async def sendNotification(self, interaction, ctx, choice, guildData):
+        if self.bot.get_user(int(interaction.data["target_id"])).bot:
+            return await ctx.send(embed=discord.Embed(
+                title="Cannot ask a bot to complete a form",
+                description="You cannot ask a bot to complete a form. Please ask a user instead",
+                colour=self.colours.red
+            ))
         v = self.handlers.createUI(ctx, [
             self.handlers.Button(cb="co", label="Complete form", style="success", emoji=self.emojis().control.right)
         ], alwaysAccept=True)
