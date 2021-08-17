@@ -137,6 +137,7 @@ class Responses(commands.Cog):
                                              disabled=(applicant == 0)),
                         self.handlers.Button(cb="na", style="secondary", label="Next response", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.right),
                                              disabled=(applicant == len(responses) - 1)),
+                        self.handlers.Button(cb="ap", style="secondary", label="Approve", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.tick)),
                         self.handlers.Button(cb="dr", style="danger", label="Delete response", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.cross)),
                         self.handlers.Button(cb="ex", style="success", label="Export responses", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.tick)),
                         self.handlers.Select(id="q", placeholder="Jump to question...", options=o, autoaccept=True)
@@ -179,6 +180,13 @@ class Responses(commands.Cog):
                         question += 1
                     elif v.selected == "ba":
                         break
+                    elif v.selected == "ap":
+                        for role in form["given_roles"]:
+                            if role.id not in [r.id for r in ctx.author.roles]:
+                                await ctx.guild.get_member(int(r[formid][applicant])).add_roles(role)
+                        for role in form["removed_roles"]:
+                            if role.id in [r.id for r in ctx.author.roles]:
+                                await ctx.guild.get_member(int(r[formid][applicant])).remove_roles(role)
                     elif v.selected == "dr":
                         entry = await self.db.get(ctx.guild.id)
                         r = entry.responses
