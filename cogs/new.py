@@ -78,9 +78,19 @@ class New(commands.Cog):
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
                 ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
-                await self._manage(ctx, m, createdBy="interaction", interaction=interaction)
+                if "options" in interaction.data:
+                    if interaction.data["options"][0]["value"] == "create":
+                        await self._manage(ctx, m, createdBy="interaction", interaction=interaction, page="create")
+                    elif interaction.data["options"][0]["value"] == "edit":
+                        await self._manage(ctx, m, createdBy="interaction", interaction=interaction, page="edit")
+                    elif interaction.data["options"][0]["value"] == "delete":
+                        await self._manage(ctx, m, createdBy="interaction", interaction=interaction, page="delete")
+                    else:
+                        await self._manage(ctx, m, createdBy="interaction", interaction=interaction)
+                else:
+                    await self._manage(ctx, m, createdBy="interaction", interaction=interaction)
 
-    async def _manage(self, ctx, m, createdBy="message", interaction=None):
+    async def _manage(self, ctx, m, createdBy="message", interaction=None, page=None):
         v = self.handlers.createUI(ctx, [
             self.handlers.Button(cb="cr", label="Create", style="success", emoji=self.bot.get_emoji(self.emojis(idOnly=True).question.new)),
             self.handlers.Button(cb="ed", label="Edit", style="secondary", emoji=self.bot.get_emoji(self.emojis(idOnly=True).details.edit)),
@@ -88,10 +98,24 @@ class New(commands.Cog):
         ])
         await m.edit(embed=discord.Embed(
             title="Manage forms",
+            description=(f"Select a form to {page}" if page else "Select an action"),
             color=self.colours.blue
         ), view=v)
-        await v.wait()
-        if v.selected == "cr":
+        if not page:
+            await v.wait()
+            d = {
+                "cr": "create",
+                "ed": "edit",
+                "de": "delete"
+            }
+            await m.edit(embed=discord.Embed(
+                title="Manage forms",
+                description=f"Select a form to {d[v.selected]}",
+                color=self.colours.blue
+            ))
+        if page:
+            v.selected = page
+        if page == "create" or v.selected == "cr":
             return await self._create(ctx, m, createdBy, interaction)
         entry = await self.db.get(ctx.guild.id)
         o = []
@@ -99,7 +123,7 @@ class New(commands.Cog):
             o.append(discord.SelectOption(value=str(form["id"]), label=form["name"], description=form["description"]))
         if not len(o):
             o.append(discord.SelectOption(value="n", label="No forms", description="There are no forms to manage"))
-        if v.selected == "ed":
+        if page == "edit" or v.selected == "ed":
             s = self.handlers.createUI(ctx, [self.handlers.Select(id="chosen", options=o, autoaccept=True)])
             await m.edit(view=s)
             await s.wait()
@@ -109,7 +133,7 @@ class New(commands.Cog):
                     if form["id"] == s.dropdowns["chosen"][0]:
                         c = form
                 return await self._create(ctx, m, createdBy, interaction=interaction, default=c)
-        elif v.selected == "de":
+        elif page == "delete" or v.selected == "de":
             s = self.handlers.createUI(ctx, [self.handlers.Select(id="chosen", options=o, autoaccept=True, max_values=len(o))])
             await m.edit(view=s)
             await s.wait()
@@ -160,7 +184,7 @@ class New(commands.Cog):
                 description=f"**Description:**\n> " +
                             data["description"],
                 color=self.colours.blue
-            )
+            ).set_footer(text=("This form does not have a name, you can add one on the Edit details page" if data["name"] == "New Form" else ""))
             for question in data["questions"]:
                 if question["question"]:
                     emoji = getattr(self.emojis().question, question["type"])
@@ -392,7 +416,7 @@ class New(commands.Cog):
         if hasattr(response, "data"):
             await response.response.send_message(embed=discord.Embed(title="Accepted", color=self.colours.green))
             await response.delete_original_message()
-            return [r for r in response.data["resolved"]["roles"][:cap]]
+            return [r for r in list(response.data["resolved"]["roles"].keys())[:cap]]
         return None
 
     async def CategoryInput(self, ctx, m, title, description, optional=False):
@@ -1170,7 +1194,9 @@ class New(commands.Cog):
             newdata = entry.data + [data]
         else:
             newdata = entry.data
-            newdata[data["id"]] = data
+            for i, form in enumerate(newdata):
+                if form["id"] == data["id"]:
+                    newdata[i] = data
         await entry.update(data=newdata)
         return
 
