@@ -34,7 +34,7 @@ class Responses(commands.Cog):
                 color=self.colours.red
             ))
         m = await ctx.send(embed=loading_embed)
-        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message)
+        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message, m=m)
         await self._responses(ctx, m, createdBy="message")
 
     @commands.Cog.listener()

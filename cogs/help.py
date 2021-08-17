@@ -38,7 +38,7 @@ class Help(commands.Cog):
                 description="Make sure I have permission to use custom emojis to use this command"
             ))
         m = await ctx.send(embed=loading_embed)
-        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message)
+        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message, m=m)
         await self._help(ctx, m)
 
     async def _help(self, ctx, m):

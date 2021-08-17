@@ -27,7 +27,7 @@ class Apply(commands.Cog):
                 description="Make sure `@everyone` has permission to use custom emojis to use this command"
             ))
         m = await ctx.send(embed=loading_embed)
-        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message)
+        ctx = self.handlers.CustomCTX(self.bot, ctx.author, ctx.guild, ctx.channel, message=ctx.message, m=m)
         await self._apply(ctx, m)
 
     async def sendNotification(self, interaction, ctx, choice, guildData):

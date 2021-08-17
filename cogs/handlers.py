@@ -115,8 +115,9 @@ class CustomCTX:
 
     async def delete(self):
         if self.message:
+            await self.m.delete()
             return await self.message.delete()
-        if self.interaction and self.m:
+        if self.interaction:
             return await self.m.edit(embed=discord.Embed(
                 title="Closed",
                 description="Dismiss this message to close it",
