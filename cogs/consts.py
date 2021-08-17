@@ -106,5 +106,5 @@ icons = {
 loading_embed = discord.Embed(
     title=f"{Emojis().loading} Loading",
     description="Your command is being processed",
-    colour=Colours().red
+    colour=Colours().blue
 ).set_footer(text="If the message does not load in 5 seconds, something is probably broken")

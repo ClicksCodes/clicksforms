@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+from discord.ui.select import Select
 from sqlalchemy.sql.expression import over
 import validators
 import datetime
@@ -108,6 +109,8 @@ class New(commands.Cog):
                 "ed": "edit",
                 "de": "delete"
             }
+            if not v.selected:
+                return await ctx.delete()
             await m.edit(embed=discord.Embed(
                 title="Manage forms",
                 description=f"Select a form to {d[v.selected]}",
@@ -182,6 +185,8 @@ class New(commands.Cog):
                                      disabled=not len(data["questions"])),
                 self.handlers.Button(cb="eq", label="Edit question", style="secondary", emoji=self.bot.get_emoji(self.emojis(idOnly=True).details.edit),
                                      disabled=not len(data["questions"])),
+                self.handlers.Button(cb="re", label="Reorder questions", style="secondary", emoji=self.bot.get_emoji(self.emojis(idOnly=True).question.reorder),
+                                     disabled=not len(data["questions"])),
                 self.handlers.Button(cb="ed", label="Edit details", style="secondary", emoji=self.bot.get_emoji(self.emojis(idOnly=True).meta.edit)),
                 self.handlers.Button(cb="sf", label="Save form", style="success", emoji=self.bot.get_emoji(self.emojis(idOnly=True).form.save)),
                 self.handlers.Button(cb="ex", label="Exit without saving", style="danger", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
@@ -210,6 +215,8 @@ class New(commands.Cog):
                 data = await self.editQuestion(m, ctx, data)
             elif v.selected == "ed":
                 data = await self.editDetails(m, ctx, data)
+            elif v.selected == "re":
+                data = await self.reorder(m, ctx, data)
             elif v.selected == "sf":
                 await self.saveForm(ctx, data, overwrite)
                 return await m.edit(embed=discord.Embed(
@@ -220,6 +227,39 @@ class New(commands.Cog):
             elif v.selected == "ex":
                 await ctx.delete()
                 break
+
+    async def reorder(self, m, ctx, data):
+        o = []
+        count = 0
+        for question in data["questions"]:
+            if question["question"]:
+                emoji = getattr(self.emojis(idOnly=True).question, question["type"])
+            else:
+                emoji = getattr(self.emojis(idOnly=True).question.decoration, question["type"].split("-")[0])
+            o.append(discord.SelectOption(
+                value=str(count),
+                label=question["title"],
+                description=question["description"].strip() or "*No description set*",
+                emoji=self.bot.get_emoji(emoji)
+            ))
+            count += 1
+        v = self.handlers.createUI(ctx, [
+            self.handlers.Select(id="order", placeholder="Decoration type", autoaccept=True, options=o, min_values=len(o), max_values=len(o)),
+            self.handlers.Button(cb="ba", label="Back", style="danger", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.left))
+        ])
+        await m.edit(embed=discord.Embed(
+            title="Select question order",
+            description="Click the questions in the order they should appear in",
+            color=self.colours.green
+        ), view=v)
+        await v.wait()
+        if v.selected is not None:
+            return
+        neworder = []
+        for i in v.dropdowns["order"]:
+            neworder.append(data["questions"][int(i)])
+        data["questions"] = neworder
+        return data
 
     async def newQuestion(self, m, ctx, data):
         dec = False
