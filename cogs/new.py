@@ -152,6 +152,13 @@ class New(commands.Cog):
             overwrite = True
         else:
             overwrite = False
+            entry = await self.db.get(ctx.guild.id)
+            if len(entry.data) >= 25:
+                return await m.edit(embed=discord.Embed(
+                    title="Maximum number of forms reached",
+                    description="You can delete one of your forms to make room for a new one",
+                    color=self.colours.red
+                ), view=None)
         data = default or {
             "id": str(datetime.datetime.now().timestamp()),
             "active": True,
