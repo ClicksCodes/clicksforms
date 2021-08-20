@@ -69,7 +69,7 @@ class Bot(commands.Bot):
     async def on_ready(self):
         await self.change_presence(
             activity=discord.Streaming(
-                name="applications",
+                name="applications | /help",
                 url="https://www.twitch.tv/clicksminuteper"
             )
         )
