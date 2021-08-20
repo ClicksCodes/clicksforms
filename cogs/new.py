@@ -709,7 +709,7 @@ class New(commands.Cog):
                 for i in possible:
                     o.append(discord.SelectOption(value=str(i), label=icons[i], emoji=self.bot.get_emoji(getattr(self.emojis(idOnly=True).r, str(i)))))
                 v = self.handlers.createUI(ctx, [
-                    self.handlers.Select(id="icon", placeholder="Question type", autoaccept=True, options=o),
+                    self.handlers.Select(id="icon", placeholder="Icon", autoaccept=True, options=o),
                     self.handlers.Button(cb="ca", label="Cancel", style="danger", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
                 ])
                 await m.edit(embed=discord.Embed(
