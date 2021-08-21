@@ -52,7 +52,7 @@ class Help(commands.Cog):
                         f"`/accept` - Starts a form if you were asked to complete one\n\n"
                         f"`Apps > Ask to complete form` - Asks a user to complete a form\n"
                         f"*This is a new Discord feature, it may not be avaliable to you. Try right clicking a member to open the apps page.*\n\n"
-                        f"[[Invite](https://discord.com/api/oauth2/authorize?client_id=805392054678192169&permissions=8&scope=bot%20applications.commands)]"
+                        f"[[Invite](https://discord.com/api/oauth2/authorize?client_id=805392054678192169&permissions=2416307200&scope=bot%20applications.commands)]"
                         f"[[Support](https://discord.gg/bPaNnxe)]",
             colour=self.colours.purple,
         ))
