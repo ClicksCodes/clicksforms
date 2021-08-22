@@ -53,7 +53,9 @@ class Help(commands.Cog):
                         f"`Apps > Ask to complete form` - Asks a user to complete a form\n"
                         f"*This is a new Discord feature, it may not be avaliable to you. Try right clicking a member to open the apps page.*\n\n"
                         f"[[Invite](https://discord.com/api/oauth2/authorize?client_id=805392054678192169&permissions=2416307200&scope=bot%20applications.commands)]"
-                        f"[[Support](https://discord.gg/bPaNnxe)]",
+                        f"[[Support](https://discord.gg/bPaNnxe)]\n\n"
+                        f"ClicksForms supports integration with RSM - A moderation bot. It can also be used for free here - [[Invite]]"
+                        f"(https://discord.com/api/oauth2/authorize?client_id=715989276382462053&permissions=121295465718&scope=bot%20applications.commands)",
             colour=self.colours.purple,
         ))
 

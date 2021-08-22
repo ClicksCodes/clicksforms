@@ -3,7 +3,7 @@ import discord
 import time
 import os
 from config import config
-from discord.ext import commands
+from discord.ext import commands, ipc
 from cogs.consts import Colours
 
 
@@ -29,9 +29,10 @@ class Context(commands.Context):
 
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
-        super().__init__(command_prefix=commands.when_mentioned_or(">"), help_command=None, **kwargs)
+        super().__init__(command_prefix=commands.when_mentioned_or(*config.prefixes), help_command=None, **kwargs)
 
         self.errors = 0
+        self.ipc = ipc.Server(self, secret_key=config.ipcToken)
         x = 0
         m = len(config.cogs)
         try:
