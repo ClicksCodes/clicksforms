@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import calendar
+import aiohttp
 import datetime
 
 from cogs.consts import *
@@ -599,6 +600,15 @@ class Apply(commands.Cog):
                 description=f"Your response has been recorded successfully",
                 color=self.colours.green
             ), view=None)
+            from config import config
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{config.rsm}/clicksforms/apply", json={
+                    "guild_id": ctx.guild.id,
+                    "created_by": ctx.author.id,
+                    "name": data["name"],
+                    "auth": config.rsmToken
+                }) as _:
+                    pass
             return
         await m.edit(embed=discord.Embed(
             title="Ended",

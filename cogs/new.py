@@ -3,7 +3,6 @@ from discord.ext import commands
 import asyncio
 import validators
 import aiohttp
-from config import config
 import datetime
 
 from cogs.consts import *
@@ -145,6 +144,7 @@ class New(commands.Cog):
                 if not form["id"] == s.dropdowns["chosen"][0]:
                     new.append(form)
                 else:
+                    from config import config
                     async with aiohttp.ClientSession() as session:
                         async with session.post(f"{config.rsm}/clicksforms/delete", json={
                             "guild_id": ctx.guild.id,
@@ -1246,6 +1246,7 @@ class New(commands.Cog):
                 return data
 
     async def saveForm(self, ctx, data, overwrite=False):
+        from config import config
         entry = await self.db.get(ctx.guild.id)
         if not overwrite:
             newdata = entry.data + [data]

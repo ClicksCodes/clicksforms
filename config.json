@@ -2,8 +2,6 @@
     "token": "ODA1MzkyMDU0Njc4MTkyMTY5.YBaNzQ._eUCo0Lu3GL6ngARcquFDhKSNcc",
     "token-dev": "NzU3MjI1NTYyODE2MTE4ODk1.X2dTQg._bwE0bMlUNKrNzg5AJXZ9c2qdEY",
 
-    "ipcToken": "HOqKr2YF9HelnvTepOqg0c5O1nWj2zehRFAOPSIybyBlbW5A1CiScgrNgGFDIKwdrI5J1qHLIRkDpjgeGLR6rI5FmQ4rOoxOZVfV",
-
     "rsm": "https://rsm.bots.clicksminuteper.net",
     "rsm-dev": "http://localhost:10000",
 
@@ -13,7 +11,8 @@
         "cogs.apply",
         "cogs.responses",
         "cogs.errors",
-        "cogs.help"
+        "cogs.help",
+        "cogs.api"
     ],
 
     "colour-dev": "Pink",
