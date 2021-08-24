@@ -447,15 +447,19 @@ class Apply(commands.Cog):
                         await response.response.send_message(embed=discord.Embed(title="Accepted", color=self.colours.green))
                         await response.delete_original_message()
                         if response.data["name"] == "time":
+                            def zeroPad(n):
+                                if len(str(n)) < 2:
+                                    return "0" + str(n)
+                                return str(n)
                             choices = {r["name"]: r["value"] for r in response.data["options"]}
                             s = ""
                             if "second" in choices:
                                 if 0 <= choices["second"] <= 59:
-                                    s = ":" + str(choices["second"])
+                                    s = ":" + zeroPad(choices["second"])
                             if 0 <= choices["hour"] <= 24 and 0 <= choices["minute"] <= 59:
                                 if choices["hour"] == 24:
                                     choices["hour"] = "0"
-                                s = f"{choices['hour']}:{choices['minute']}{s}"
+                                s = f"{zeroPad(choices['hour'])}:{zeroPad(choices['minute'])}{s}"
                                 answers.append([question["id"], s])
                                 break
                 if ex:
