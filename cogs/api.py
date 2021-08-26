@@ -1,5 +1,6 @@
 import datetime
 import discord
+from discord.client import _cancel_tasks
 import uvicorn
 from cogs.consts import *
 from config import config
@@ -30,6 +31,13 @@ class Auth(BaseModel):
     token: str
     guild: int
 
+
+class GoogleFormsResponse(BaseModel):
+    token: str
+    data: dict
+    code: str
+
+
 @app.get("/forms")
 async def forms(auth: Auth):
     from cogs.handlers import Database
@@ -52,6 +60,15 @@ async def responses(auth: Auth):
     if not entry.responses:
         return PlainTextResponse("No forms found", status_code=404)
     return JSONResponse(entry.responses, status_code=200)
+
+
+@app.get("/googleforms")
+async def responses(data: GoogleFormsResponse):
+    data = dict(data)
+    print(data)
+    if data["token"] != config.gFormsToken:
+        return PlainTextResponse("Invalid token", status_code=403)
+    return PlainTextResponse("Success", status_code=200)
 
 
 def setup(bot):
