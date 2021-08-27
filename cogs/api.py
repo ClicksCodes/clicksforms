@@ -62,7 +62,7 @@ async def responses(auth: Auth):
     return JSONResponse(entry.responses, status_code=200)
 
 
-@app.get("/googleforms")
+@app.post("/googleforms")
 async def responses(data: GoogleFormsResponse):
     data = dict(data)
     print(data)
