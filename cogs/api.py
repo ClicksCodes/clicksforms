@@ -1,4 +1,5 @@
 import datetime
+import asyncio
 import discord
 from discord.client import _cancel_tasks
 import uvicorn
@@ -10,7 +11,7 @@ from pydantic import BaseModel
 from fastapi.responses import PlainTextResponse, JSONResponse
 
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 colours = Colours()
 emojis = Emojis
 
@@ -62,12 +63,19 @@ async def responses(auth: Auth):
     return JSONResponse(entry.responses, status_code=200)
 
 
+async def addAndDelete(data):
+    from bot import bot
+    bot.codes[data["code"]] = data
+    await asyncio.sleep(60 * 30)
+    if data["code"] in bot.codes:
+        del bot.codes[data["code"]]
+
 @app.post("/googleforms")
 async def responses(data: GoogleFormsResponse):
     data = dict(data)
-    print(data)
     if data["token"] != config.gFormsToken:
         return PlainTextResponse("Invalid token", status_code=403)
+    asyncio.create_task(addAndDelete(data))
     return PlainTextResponse("Success", status_code=200)
 
 

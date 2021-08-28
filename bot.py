@@ -15,3 +15,4 @@ bot = Bot(
     intents=intents
 )
 bot.requests = {}
+bot.codes = {}
