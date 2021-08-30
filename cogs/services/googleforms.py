@@ -39,7 +39,7 @@ class GoogleForms(commands.Cog):
                 description="You need manage server and manage roles to run this command",
                 color=self.colours.red
             ))
-        code = code.upper().replace("I", "1").replace("O", "0")
+        code = code.upper().replace("I", "1").replace("O", "0").replace("S", "5")
         if code not in self.bot.codes:
             return await m.edit(embed=discord.Embed(
                 title="Code not found",
