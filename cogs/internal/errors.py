@@ -31,10 +31,6 @@ class Errors(commands.Cog):
 
     async def _on_error(self, ctx, error):
         try:
-            # Normal Green
-            # Warning Yellow
-            # Critical Red
-            # Status Blue
             if not ctx.channel.permissions_for(ctx.me).send_messages:
                 return await self.send_error(ctx, "I tried to send a message, but I didn't have permission to send it. Make sure I have `send_messages`")
             elif not ctx.channel.permissions_for(ctx.me).embed_links:

@@ -13,7 +13,7 @@
         "cogs.commands.help",
         "cogs.internal.errors",
         "cogs.internal.api",
-        "cogs.services.googleforms"
+        "cogs.services.download"
     ],
 
     "colour-dev": "Pink",

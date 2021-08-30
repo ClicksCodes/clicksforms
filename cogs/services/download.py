@@ -47,10 +47,20 @@ class GoogleForms(commands.Cog):
                 color=self.colours.red
             ).set_footer(text="To make it easier to read, some letters such as L and o are replaced with 1 and 0"))
         else:
-            data = self.bot.codes[code]
+            rdata, verified, servicedata = self.bot.codes[code]
+            questions = []
+            for question in rdata["questions"]:
+                question["title"] = question["title"][:25]
+                question["description"] = question["description"][:50]
+                if question["colour"] not in ["red", "orange", "yellow", "green", "blue", "purple", "pink", "white", "black"]:
+                    question["colour"] = "red"
+                questions.append(question)
+            data = {}
             data["id"] = str(datetime.datetime.now().timestamp())
             data["active"] = True
-            data["anonymous"] = False
+            data["title"] = rdata["title"]
+            data["description"] = rdata["description"]
+            data["active"] = True
             data["guild"] = ctx.guild.id
             data["created_by"] = ctx.author.id
             data["required_roles"] = []
@@ -58,6 +68,7 @@ class GoogleForms(commands.Cog):
             data["given_roles"] = []
             data["removed_roles"] = []
             data["auto_accept"] = False
+            data["questions"] = questions
             v = self.handlers.createUI(ctx, [
                 self.handlers.Button(label="Add", style="success", emoji=self.emojis().control.tick, cb="ad"),
                 self.handlers.Button(label="Cancel", style="danger", emoji=self.emojis().control.cross, cb="ca")
@@ -78,17 +89,18 @@ class GoogleForms(commands.Cog):
                 from config import config
                 entry = await self.db.get(ctx.guild.id)
                 newdata = entry.data
-                for i, form in enumerate(newdata):
-                    if form["id"] == data["id"]:
-                        newdata[i] = data
+                newdata.append(data)
                 await entry.update(data=newdata)
                 try:
                     async with aiohttp.ClientSession() as session:
-                        async with session.post(f"{config.rsm}/clicksforms/import/googleforms", json={
+                        async with session.post(f"{config.rsm}/clicksforms/import", json={
                             "guild_id": ctx.guild.id,
                             "created_by": ctx.author.id,
                             "questions": len(data["questions"]),
-                            "name": data["name"],
+                            "name": data["title"],
+                            "service": servicedata[0],
+                            "service_url": servicedata[1],
+                            "verified": verified,
                             "auth": config.rsmToken
                         }) as _:
                             pass
@@ -96,7 +108,7 @@ class GoogleForms(commands.Cog):
                     pass
                 return await m.edit(embed=discord.Embed(
                     title="Added",
-                    description="Your form can now be accessed through `/apply`. If you would like to edit the form, run `/edit`",
+                    description="Your form can now be accessed through `/apply`. If you would like to edit the form, run `/manage`",
                     color=self.colours.green
                 ), view=None)
 

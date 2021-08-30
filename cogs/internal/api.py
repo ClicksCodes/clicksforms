@@ -1,7 +1,6 @@
-import datetime
 import asyncio
-import discord
-from discord.client import _cancel_tasks
+import random
+import typing
 import uvicorn
 from cogs.consts import *
 from config import config
@@ -33,10 +32,11 @@ class Auth(BaseModel):
     guild: int
 
 
-class GoogleFormsResponse(BaseModel):
-    token: str
+class ServiceResponse(BaseModel):
+    token: typing.Optional[str]
+    service: str
+    service_url: str
     data: dict
-    code: str
 
 
 @app.get("/forms")
@@ -63,20 +63,32 @@ async def responses(auth: Auth):
     return JSONResponse(entry.responses, status_code=200)
 
 
-async def addAndDelete(data):
+async def addAndDelete(data, verified, code):
     from bot import bot
-    bot.codes[data["code"]] = data["data"]
-    await asyncio.sleep(60 * 30)
-    if data["code"] in bot.codes:
-        del bot.codes[data["code"]]
+    bot.codes[code] = (data["data"], verified, (data["service"], data["service_url"]))
+    await asyncio.sleep(60 * 60)
+    if code in bot.codes:
+        del bot.codes[code]
 
-@app.post("/googleforms")
-async def responses(data: GoogleFormsResponse):
+
+@app.post("/upload")
+async def responses(data: ServiceResponse):
+    from bot import bot
     data = dict(data)
-    if data["token"] != config.gFormsToken:
-        return PlainTextResponse("Invalid token", status_code=403)
-    asyncio.create_task(addAndDelete(data))
-    return PlainTextResponse("Success", status_code=200)
+    verified = False
+    code = ""
+    tries = 0
+    chars = 5
+    while (not len(code)) or (code in bot.codes):
+        if tries >= 26 ** chars - 5:
+            tries = 0
+            chars += 1
+        code = "".join([random.choice(list("0123456789ABCDEFGHJKLMNPQRTUWXYZ")) for _ in range(5)])
+        await asyncio.sleep(0)
+    if data["service"].lower() == "google forms" and data["token"] == config.gFormsToken:
+        verified = True
+    asyncio.create_task(addAndDelete(data, verified, code))
+    return PlainTextResponse(code, status_code=201)
 
 
 def setup(bot):

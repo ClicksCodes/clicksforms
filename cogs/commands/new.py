@@ -153,7 +153,7 @@ class New(commands.Cog):
             await s.wait()
             new = []
             for form in entry.data:
-                if not form["id"] == s.dropdowns["chosen"][0]:
+                if form["id"] not in s.dropdowns["chosen"]:
                     new.append(form)
                 else:
                     from config import config
