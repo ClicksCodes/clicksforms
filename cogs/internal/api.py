@@ -65,7 +65,7 @@ async def responses(auth: Auth):
 
 async def addAndDelete(data):
     from bot import bot
-    bot.codes[data["code"]] = data
+    bot.codes[data["code"]] = data["data"]
     await asyncio.sleep(60 * 30)
     if data["code"] in bot.codes:
         del bot.codes[data["code"]]

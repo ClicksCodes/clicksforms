@@ -157,15 +157,18 @@ class New(commands.Cog):
                     new.append(form)
                 else:
                     from config import config
-                    async with aiohttp.ClientSession() as session:
-                        async with session.post(f"{config.rsm}/clicksforms/delete", json={
-                            "guild_id": ctx.guild.id,
-                            "created_by": ctx.author.id,
-                            "questions": 0,
-                            "name": form["name"],
-                            "auth": config.rsmToken
-                        }) as _:
-                            pass
+                    try:
+                        async with aiohttp.ClientSession() as session:
+                            async with session.post(f"{config.rsm}/clicksforms/delete", json={
+                                "guild_id": ctx.guild.id,
+                                "created_by": ctx.author.id,
+                                "questions": 0,
+                                "name": form["name"],
+                                "auth": config.rsmToken
+                            }) as _:
+                                pass
+                    except aiohttp.ClientConnectorError:
+                        pass
             await entry.update(data=new)
             return await m.edit(embed=discord.Embed(
                 title="Forms deleted successfully",
@@ -1268,15 +1271,18 @@ class New(commands.Cog):
                 if form["id"] == data["id"]:
                     newdata[i] = data
         await entry.update(data=newdata)
-        async with aiohttp.ClientSession() as session:
-            async with session.post(f"{config.rsm}/clicksforms/" + ("edit" if overwrite else "create"), json={
-                "guild_id": ctx.guild.id,
-                "created_by": ctx.author.id,
-                "questions": len(data["questions"]),
-                "name": data["name"],
-                "auth": config.rsmToken
-            }) as _:
-                pass
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{config.rsm}/clicksforms/" + ("edit" if overwrite else "create"), json={
+                    "guild_id": ctx.guild.id,
+                    "created_by": ctx.author.id,
+                    "questions": len(data["questions"]),
+                    "name": data["name"],
+                    "auth": config.rsmToken
+                }) as _:
+                    pass
+        except aiohttp.ClientConnectorError:
+            pass
         return
 
 

@@ -605,14 +605,17 @@ class Apply(commands.Cog):
                 color=self.colours.green
             ), view=None)
             from config import config
-            async with aiohttp.ClientSession() as session:
-                async with session.post(f"{config.rsm}/clicksforms/apply", json={
-                    "guild_id": ctx.guild.id,
-                    "created_by": ctx.author.id,
-                    "name": data["name"],
-                    "auth": config.rsmToken
-                }) as _:
-                    pass
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(f"{config.rsm}/clicksforms/apply", json={
+                        "guild_id": ctx.guild.id,
+                        "created_by": ctx.author.id,
+                        "name": data["name"],
+                        "auth": config.rsmToken
+                    }) as _:
+                        pass
+            except aiohttp.ClientConnectorError:
+                pass
             return
         await m.edit(embed=discord.Embed(
             title="Ended",

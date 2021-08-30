@@ -7,12 +7,13 @@
 
     "cogs": [
         "jishaku",
-        "cogs.new",
-        "cogs.apply",
-        "cogs.responses",
-        "cogs.errors",
-        "cogs.help",
-        "cogs.api"
+        "cogs.commands.new",
+        "cogs.commands.apply",
+        "cogs.commands.responses",
+        "cogs.commands.help",
+        "cogs.internal.errors",
+        "cogs.internal.api",
+        "cogs.services.googleforms"
     ],
 
     "colour-dev": "Pink",
