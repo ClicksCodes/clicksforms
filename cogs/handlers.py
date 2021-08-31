@@ -137,20 +137,36 @@ def parsedForm(data):
 
     if "active" not in data:
         out["active"] = True
+    else:
+        out["active"] = data["active"]
     if "anonymous" not in data:
         out["anonymous"] = False
+    else:
+        out["anonymous"] = data["anonymous"]
     if "description" not in data:
         out["description"] = ""
+    else:
+        out["description"] = data["description"]
     if "required_roles" not in data:
         out["required_roles"] = []
+    else:
+        out["required_roles"] = data["required_roles"]
     if "disallowed_roles" not in data:
         out["disallowed_roles"] = []
+    else:
+        out["disallowed_roles"] = data["disallowed_roles"]
     if "given_roles" not in data:
         out["given_roles"] = []
+    else:
+        out["given_roles"] = data["given_roles"]
     if "removed_roles" not in data:
         out["removed_roles"] = []
+    else:
+        out["removed_roles"] = data["removed_roles"]
     if "auto_accept" not in data:
         out["auto_accept"] = False
+    else:
+        out["auto_accept"] = data["auto_accept"]
 
     for question in data["questions"]:
         question["id"] = str(datetime.datetime.now().timestamp())
