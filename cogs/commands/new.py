@@ -103,6 +103,15 @@ class New(commands.Cog):
                     await self._manage(ctx, m, createdBy="interaction", interaction=interaction)
 
     async def _manage(self, ctx, m, createdBy="message", interaction=None, page=None):
+        fix = False
+        entry = await self.db.get(ctx.guild.id)
+        newdata = []
+        for form in entry.data:
+            if not isinstance(self.handlers.parsedForm(form), tuple):
+                newdata.append(form)
+        if newdata != entry.data:
+            fix = True
+            await entry.update(data=newdata)
         v = self.handlers.createUI(ctx, [
             self.handlers.Button(cb="cr", label="Create", style="success", emoji=self.bot.get_emoji(self.emojis(idOnly=True).question.new)),
             self.handlers.Button(cb="ed", label="Edit", style="secondary", emoji=self.bot.get_emoji(self.emojis(idOnly=True).details.edit)),
@@ -112,7 +121,7 @@ class New(commands.Cog):
             title="Manage forms",
             description=(f"Select a form to {page}" if page else "Select an action"),
             color=self.colours.blue
-        ), view=v)
+        ).set_footer("All checks passed" if not fix else "We fixed up your forms as best we could, but one appeared to be corrupted"), view=v)
         if not page:
             await v.wait()
             d = {
