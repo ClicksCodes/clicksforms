@@ -194,11 +194,14 @@ def parsedForm(data):
             question["options"]["min"] = max(int(question["options"]["min"]), 1)
             question["options"]["max"] = min(int(question["options"]["max"]), len(question["options"]["options"]))
             for i in range(len(question["options"]["options"])):
-                if len(question["options"]["options"][str(i)]) != 2:
+                if isinstance(question["options"]["options"].keys(), str):
+                    question["options"]["options"][int(i)] = question["options"]["options"][str(i)]
+                    del question["options"]["options"][str(i)]
+                if len(question["options"]["options"][int(i)]) != 2:
                     return (400, f"Option '{i}' does not have a title")
-                question["options"]["options"][str(i)][0] = question["options"]["options"][str(i)][0][:100]
-                if isinstance(question["options"]["options"][str(i)][1], str):
-                    question["options"]["options"][str(i)][1] = question["options"]["options"][str(i)][1][:100]
+                question["options"]["options"][int(i)][0] = question["options"]["options"][int(i)][0][:100]
+                if isinstance(question["options"]["options"][int(i)][1], str):
+                    question["options"]["options"][int(i)][1] = question["options"]["options"][int(i)][1][:100]
         elif question["type"] == "image-decoration":
             if "url" not in question["options"]:
                 return (400, f"No image url was provided for question '{question['title']}'")
