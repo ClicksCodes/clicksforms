@@ -127,7 +127,7 @@ class CustomCTX:
 
 
 def parsedForm(data):
-    out = {}
+    out = {"questions": []}
     out["id"] = str(datetime.datetime.now().timestamp())
     if "name" not in data:
         return (400, "No name was provided." + (" Did you mean 'name'?" if "title" in data else ""))
@@ -153,15 +153,17 @@ def parsedForm(data):
 
     for question in data["questions"]:
         question["id"] = str(datetime.datetime.now().timestamp())
+        if "type" not in question:
+            return (400, "No question type was provided")
         if question["type"] not in ["text", "number", "multichoice", "fileupload", "time", "date", "text-decoration", "image-decoration", "url-decoration"]:
             return (400, f"Type '{question['type']}' does not exist")
-        if question["title"] not in question:
+        if "title" not in question:
             return (400, f'No question title was privided')
-        if question["description"] not in question:
+        if "description" not in question:
             question["description"] = ""
-        if question["required"] not in question:
+        if "required" not in question:
             question["required"] = True
-        if question["colour"] not in question:
+        if "colour" not in question:
             return (400, f"No colour was provided for question '{question['title']}'")
         if question["colour"] not in ["red", "orange", "yellow", "green", "blue", "purple", "pink", "grey"]:
             return (400, f"Colour '{question['colour']}' does not exist")
@@ -192,10 +194,10 @@ def parsedForm(data):
             question["options"]["min"] = max(int(question["options"]["min"]), 1)
             question["options"]["max"] = min(int(question["options"]["max"]), len(question["options"]["options"]))
             for i in range(len(question["options"]["options"])):
-                if len(question["options"]["options"][i]) != 2:
+                if len(question["options"]["options"][str(i)]) != 2:
                     return (400, f"Option '{i}' does not have a title")
-                question["options"]["options"][i][0] = question["options"]["options"][i][0][:100]
-                question["options"]["options"][i][1] = question["options"]["options"][i][1][:100]
+                question["options"]["options"][str(i)][0] = question["options"]["options"][str(i)][0][:100]
+                question["options"]["options"][str(i)][1] = question["options"]["options"][str(i)][1][:100]
         elif question["type"] == "image-decoration":
             if "url" not in question["options"]:
                 return (400, f"No image url was provided for question '{question['title']}'")

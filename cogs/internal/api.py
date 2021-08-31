@@ -82,7 +82,7 @@ async def responses(data: ServiceResponse):
 
     data["data"] = parsedForm(data["data"])
     if isinstance(data["data"], tuple):
-        return PlainTextResponse(data["data"][0], status_code=data["data"][0])
+        return PlainTextResponse(data["data"][1], status_code=data["data"][0])
 
     verified = False
     code = ""
@@ -101,7 +101,8 @@ async def responses(data: ServiceResponse):
 
 
 def setup(bot):
-    config = uvicorn.Config(app, host="0.0.0.0", port=10006, lifespan="on", access_log=False, log_level="critical")
+    # config = uvicorn.Config(app, host="0.0.0.0", port=10006, lifespan="on", access_log=False, log_level="critical")
+    config = uvicorn.Config(app, host="0.0.0.0", port=10006, lifespan="on", access_log=False)
     server = uvicorn.Server(config)
     server.config.setup_event_loop()
     if not hasattr(bot, "loop"):
