@@ -30,7 +30,44 @@ class GoogleForms(commands.Cog):
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
                 ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
-                await self._fetch(ctx, m, interaction.data["options"][0]["value"])
+                if not len(interaction.data["options"]):
+                    await self._service(ctx, m)
+                else:
+                    await self._fetch(ctx, m, interaction.data["options"][0]["value"])
+
+    async def _service(self, ctx, m):
+        if not ctx.channel.permissions_for(ctx.author).manage_guild or not ctx.channel.permissions_for(ctx.author).manage_roles:
+            return await m.edit(embed=discord.Embed(
+                title="Missing permissions",
+                description="You need manage server and manage roles to run this command",
+                color=self.colours.red
+            ))
+        v = self.handlers.createUI(ctx, [
+            self.handlers.Select("service", options=[
+                discord.SelectOption(label="YourApps", value="ya", description="YourApps by DDS")
+            ])
+        ])
+        await m.edit(embed=discord.Embed(
+            title="Select a service",
+            description="Please select a service to look up",
+            color=self.colours.blue
+        ), view=v)
+        await v.wait()
+        if v.selected_option.value == "ya":
+            await self._ya(ctx, m)
+        else:
+            return await m.edit(embed=discord.Embed(
+                title="Error",
+                description="Service not supported",
+                color=self.colours.red
+            ), view=None)
+
+    async def _ya(self, ctx, m):
+        return await m.edit(embed=discord.Embed(
+            title="Error",
+            description="Service not supported",
+            color=self.colours.red
+        ), view=None)
 
     async def _fetch(self, ctx, m, code):
         if not ctx.channel.permissions_for(ctx.author).manage_guild or not ctx.channel.permissions_for(ctx.author).manage_roles:
@@ -48,34 +85,13 @@ class GoogleForms(commands.Cog):
             ).set_footer(text="To make it easier to read, some letters such as L and o are replaced with 1 and 0"))
         else:
             rdata, verified, servicedata = self.bot.codes[code]
-            questions = []
-            for question in rdata["questions"]:
-                question["title"] = question["title"][:25]
-                question["description"] = question["description"][:50]
-                if question["colour"] not in ["red", "orange", "yellow", "green", "blue", "purple", "pink", "white", "black"]:
-                    question["colour"] = "red"
-                questions.append(question)
-            data = {}
-            data["id"] = str(datetime.datetime.now().timestamp())
-            data["active"] = True
-            data["title"] = rdata["title"]
-            data["description"] = rdata["description"]
-            data["active"] = True
-            data["guild"] = ctx.guild.id
-            data["created_by"] = ctx.author.id
-            data["required_roles"] = []
-            data["disallowed_roles"] = []
-            data["given_roles"] = []
-            data["removed_roles"] = []
-            data["auto_accept"] = False
-            data["questions"] = questions
             v = self.handlers.createUI(ctx, [
                 self.handlers.Button(label="Add", style="success", emoji=self.emojis().control.tick, cb="ad"),
                 self.handlers.Button(label="Cancel", style="danger", emoji=self.emojis().control.cross, cb="ca")
             ])
             await m.edit(embed=discord.Embed(
                 title="Downloaded form successfully",
-                description=f"{len(data['questions'])} questions have been imported",
+                description=f"{len(rdata['questions'])} questions have been imported",
                 color=self.colours.green
             ), view=v)
             await v.wait()
@@ -89,15 +105,15 @@ class GoogleForms(commands.Cog):
                 from config import config
                 entry = await self.db.get(ctx.guild.id)
                 newdata = entry.data
-                newdata.append(data)
+                newdata.append(rdata)
                 await entry.update(data=newdata)
                 try:
                     async with aiohttp.ClientSession() as session:
                         async with session.post(f"{config.rsm}/clicksforms/import", json={
                             "guild_id": ctx.guild.id,
                             "created_by": ctx.author.id,
-                            "questions": len(data["questions"]),
-                            "name": data["title"],
+                            "questions": len(rdata["questions"]),
+                            "name": rdata["title"],
                             "service": servicedata[0],
                             "service_url": servicedata[1],
                             "verified": verified,

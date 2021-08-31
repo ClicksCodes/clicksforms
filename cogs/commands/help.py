@@ -30,7 +30,6 @@ class Help(commands.Cog):
                 await self._help(ctx, m)
 
     @commands.command()
-    @commands.guild_only()
     async def help(self, ctx):
         if not ctx.channel.permissions_for(ctx.me).external_emojis:
             return await ctx.send(embed=discord.Embed(

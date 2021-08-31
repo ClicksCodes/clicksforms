@@ -118,7 +118,7 @@ class Responses(commands.Cog):
                     ), view=v)
                     await v.wait()
                     continue
-                questions = [q for q in form["questions"] if q["question"]]
+                questions = [q for q in form["questions"] if ("-decoration" not in q["type"])]
                 o = []
                 for i, q in enumerate(questions):
                     o.append(
@@ -199,7 +199,7 @@ class Responses(commands.Cog):
                             break
                     elif v.selected == "ex":
                         await self.export(ctx, m, questions, responses)
-        await m.delete()
+        await ctx.delete()
 
     async def export(self, ctx, m, questions, responses):
         v = self.handlers.createUI(ctx, [

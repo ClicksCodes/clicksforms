@@ -223,7 +223,7 @@ class New(commands.Cog):
                 color=self.colours.blue
             ).set_footer(text=("This form does not have a name, you can add one on the Edit details page" if data["name"] == "New Form" else ""))
             for question in data["questions"]:
-                if question["question"]:
+                if "-decoration" not in question["type"]:
                     emoji = getattr(self.emojis().question, question["type"])
                 else:
                     emoji = getattr(self.emojis().question.decoration, question["type"].split("-")[0])
@@ -257,7 +257,7 @@ class New(commands.Cog):
         o = []
         count = 0
         for question in data["questions"]:
-            if question["question"]:
+            if "-decoration" not in question["type"]:
                 emoji = getattr(self.emojis(idOnly=True).question, question["type"])
             else:
                 emoji = getattr(self.emojis(idOnly=True).question.decoration, question["type"].split("-")[0])
@@ -540,7 +540,7 @@ class New(commands.Cog):
 
     async def newText(self, m, ctx, data, default=None):
         question = default or {"type": "text", "title": "", "description": "", "colour": "red",
-                               "options": {"min": 1, "max": 2000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {"min": 1, "max": 2000}, "required": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -568,12 +568,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
                 elif i:
@@ -600,7 +600,7 @@ class New(commands.Cog):
 
     async def newNumber(self, m, ctx, data, default=None):
         question = default or {"type": "number", "title": "", "description": "", "colour": "red",
-                               "options": {"min": 1, "max": 1000000000000}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {"min": - (2 ** 32), "max": 2 ** 32}, "required": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -628,12 +628,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
                 elif i:
@@ -660,7 +660,7 @@ class New(commands.Cog):
 
     async def newMultipleChoice(self, m, ctx, data, default=None):
         question = default or {"type": "multichoice", "title": "", "description": "", "colour": "red",
-                               "options": {"min": 1, "max": 1, "options": {}}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {"min": 1, "max": 1, "options": {}}, "required": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co", "ao"]
@@ -701,12 +701,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
                 elif i:
@@ -810,7 +810,7 @@ class New(commands.Cog):
 
     async def newFileUpload(self, m, ctx, data, default=None):
         question = default or {"type": "fileupload", "title": "", "description": "", "colour": "red",
-                               "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {}, "required": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -835,12 +835,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
                 elif i:
@@ -859,7 +859,7 @@ class New(commands.Cog):
 
     async def newTime(self, m, ctx, data, default=None):
         question = default or {"type": "time", "title": "", "description": "", "colour": "red",
-                               "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {}, "required": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -884,12 +884,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
                 elif i:
@@ -908,7 +908,7 @@ class New(commands.Cog):
 
     async def newDate(self, m, ctx, data, default=None):
         question = default or {"type": "date", "title": "", "description": "", "colour": "red",
-                               "options": {}, "required": True, "question": True, "id": datetime.datetime.now().timestamp()}
+                               "options": {}, "required": True, "id": datetime.datetime.now().timestamp()}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -933,12 +933,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Question title", "What should the title of the question be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Question description", "What should the description of the question be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
                 elif i:
@@ -956,7 +956,7 @@ class New(commands.Cog):
         return data
 
     async def newTextDecoration(self, m, ctx, data, default=None):
-        question = default or {"type": "text-decoration", "title": "", "description": "", "colour": "red", "options": {}, "question": False}
+        question = default or {"type": "text-decoration", "title": "", "description": "", "colour": "red", "options": {},}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]
@@ -977,12 +977,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Decoration title", "What should the title of the decoration be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Decoration title", "What should the title of the decoration be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Decoration description", "What should the description of the decoration be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Decoration description", "What should the description of the decoration be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
                 elif i:
@@ -998,7 +998,7 @@ class New(commands.Cog):
         return data
 
     async def newImageDecoration(self, m, ctx, data, default=None):
-        question = default or {"type": "image-decoration", "title": "", "description": "", "colour": "red", "options": {"url": ""}, "question": False}
+        question = default or {"type": "image-decoration", "title": "", "description": "", "colour": "red", "options": {"url": ""}}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co", "ur"]
@@ -1030,12 +1030,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Decoration title", "What should the title of the decoration be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Decoration title", "What should the title of the decoration be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Decoration description", "What should the description of the decoration be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Decoration description", "What should the description of the decoration be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = ""
             elif v.selected == "ur":
@@ -1051,7 +1051,7 @@ class New(commands.Cog):
         return data
 
     async def newURLDecoration(self, m, ctx, data, default=None):
-        question = default or {"type": "url-decoration", "title": "", "description": "", "colour": "red", "options": {"url": ""}, "question": False}
+        question = default or {"type": "url-decoration", "title": "", "description": "", "colour": "red", "options": {"url": ""}}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co", "ur"]
@@ -1083,12 +1083,12 @@ class New(commands.Cog):
             await v.wait()
             if v.selected == "ti":
                 self.cl.append("ti")
-                i = await self.TextInput(ctx, m, "Decoration title", "What should the title of the decoration be?", optional=False, min_length=1, max_length=200)
+                i = await self.TextInput(ctx, m, "Decoration title", "What should the title of the decoration be?", optional=False, min_length=1, max_length=100)
                 if i:
                     question["title"] = i
             elif v.selected == "de":
                 self.cl.append("de")
-                i = await self.TextInput(ctx, m, "Decoration description", "What should the description of the decoration be?", optional=True, min_length=1, max_length=1000)
+                i = await self.TextInput(ctx, m, "Decoration description", "What should the description of the decoration be?", optional=True, min_length=1, max_length=100)
                 if i is True:
                     question["description"] = " "
                 elif i:
@@ -1119,7 +1119,7 @@ class New(commands.Cog):
         options = []
         count = 0
         for question in data["questions"]:
-            if question["question"]:
+            if "-decoration" not in question["type"]:
                 emoji = getattr(self.emojis(idOnly=True).question, question["type"])
             else:
                 emoji = getattr(self.emojis(idOnly=True).question.decoration, question["type"].split("-")[0])
@@ -1150,7 +1150,7 @@ class New(commands.Cog):
         options = []
         count = 0
         for question in data["questions"]:
-            if question["question"]:
+            if "-decoration" not in question["type"]:
                 emoji = getattr(self.emojis(idOnly=True).question, question["type"])
             else:
                 emoji = getattr(self.emojis(idOnly=True).question.decoration, question["type"].split("-")[0])

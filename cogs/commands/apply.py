@@ -144,7 +144,7 @@ class Apply(commands.Cog):
 
     def genInfo(self, form, warnings):
         return f"**Description:**\n> {form['description']}\n" + \
-               f"**Questions:** {len([q for q in form['questions'] if q['question']])}\n" + \
+               f"**Questions:** {len([q for q in form['questions'] if '-decoration' not in q['type']])}\n" + \
                (f"\nThis form is anonymous. Your username will not be visible once the form is submitted.\n" if form["anonymous"] else "") + \
                "\n" + ("\n".join(warnings))
 

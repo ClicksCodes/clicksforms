@@ -8,12 +8,15 @@ from config import config
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.responses import PlainTextResponse, JSONResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 
 app = FastAPI(docs_url=None, redoc_url=None)
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
 colours = Colours()
 emojis = Emojis
-
 
 @app.get("/")
 def root():
@@ -72,9 +75,16 @@ async def addAndDelete(data, verified, code):
 
 
 @app.post("/upload")
-async def responses(data: ServiceResponse):
+@limiter.limit("10/minute")
+async def responses(request, data: ServiceResponse):
     from bot import bot
+    from cogs.handlers import parsedForm
     data = dict(data)
+
+    data["data"] = parsedForm(data["data"])
+    if isinstance(data["data"], int):
+        return PlainTextResponse("400", status_code=data["data"])
+
     verified = False
     code = ""
     tries = 0

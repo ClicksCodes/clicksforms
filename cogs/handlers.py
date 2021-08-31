@@ -1,3 +1,4 @@
+import datetime
 import discord
 from cogs.consts import *
 import databases
@@ -123,3 +124,84 @@ class CustomCTX:
                 description="Dismiss this message to close it",
                 color=Colours().red
             ).set_footer(text="Discord does not, in fact, let you delete messages only you can see :/"), view=None)
+
+
+def parsedForm(data):
+    out = {}
+    out["id"] = str(datetime.datetime.now().timestamp())
+    if "name" not in data:
+        return 400
+    if "questions" not in data:
+        return 400
+
+    if "active" not in data:
+        out["active"] = True
+    if "anonymous" not in data:
+        out["anonymous"] = False
+    if "description" not in data:
+        out["description"] = ""
+    if "required_roles" not in data:
+        out["required_roles"] = []
+    if "disallowed_roles" not in data:
+        out["disallowed_roles"] = []
+    if "given_roles" not in data:
+        out["given_roles"] = []
+    if "removed_roles" not in data:
+        out["removed_roles"] = []
+    if "auto_accept" not in data:
+        out["auto_accept"] = False
+
+    for question in data["questions"]:
+        question["id"] = str(datetime.datetime.now().timestamp())
+        if "type" not in ["text", "number", "multichoice", "fileupload", "time", "date", "text-decoration", "image-decoration", "url-decoration"]:
+            return 400
+        if "title" not in question:
+            return 400
+        if "description" not in question:
+            question["description"] = ""
+        if "required" not in question:
+            question["required"] = True
+        if "colour" not in question:
+            return 400
+        if question["colour"] not in ["red", "orange", "yellow", "green", "blue", "purple", "pink", "grey"]:
+            return 400
+        if "options" not in question:
+            return 400
+
+        if question["type"] == "text":
+            if "min" not in question["options"]:
+                return 400
+            if "max" not in question["options"]:
+                return 400
+            question["options"]["min"] = max(int(question["options"]["min"]), 1)
+            question["options"]["max"] = min(int(question["options"]["max"]), 2000)
+        elif question["type"] == "number":
+            if "min" not in question["options"]:
+                return 400
+            if "max" not in question["options"]:
+                return 400
+            question["options"]["min"] = max(int(question["options"]["min"]), 2 ** 32)
+            question["options"]["max"] = min(int(question["options"]["max"]), 2 ** 32)
+        elif question["type"] == "multichoice":
+            if "min" not in question["options"]:
+                return 400
+            if "max" not in question["options"]:
+                return 400
+            if not len(question["options"]["options"]):
+                return 400
+            question["options"]["min"] = max(int(question["options"]["min"]), 1)
+            question["options"]["max"] = min(int(question["options"]["max"]), len(question["options"]["options"]))
+            for i in range(len(question["options"]["options"])):
+                if len(question["options"]["options"][i]) != 2:
+                    return 400
+                question["options"]["options"][i][0] = question["options"]["options"][i][0][:100]
+                question["options"]["options"][i][1] = question["options"]["options"][i][1][:100]
+        elif question["type"] == "image-decoration":
+            if "url" not in question["options"]:
+                return 400
+        elif question["type"] == "url-decoration":
+            if "url" not in question["options"]:
+                return 400
+
+        out["questions"].append(question)
+    return out

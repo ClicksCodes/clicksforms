@@ -67,6 +67,8 @@ class Errors(commands.Cog):
                 return
             elif isinstance(error, asyncio.exceptions.TimeoutError):
                 return
+            else:
+                print(error)
         except Exception as e:
             print(e)
 
