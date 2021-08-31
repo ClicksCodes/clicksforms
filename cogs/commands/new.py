@@ -113,6 +113,7 @@ class New(commands.Cog):
                 fix = True
         if fix:
             await entry.update(data=newdata)
+            entry.data = newdata
         v = self.handlers.createUI(ctx, [
             self.handlers.Button(cb="cr", label="Create", style="success", emoji=self.bot.get_emoji(self.emojis(idOnly=True).question.new)),
             self.handlers.Button(cb="ed", label="Edit", style="secondary", emoji=self.bot.get_emoji(self.emojis(idOnly=True).details.edit)),
