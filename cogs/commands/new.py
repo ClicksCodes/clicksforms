@@ -121,7 +121,7 @@ class New(commands.Cog):
             title="Manage forms",
             description=(f"Select a form to {page}" if page else "Select an action"),
             color=self.colours.blue
-        ).set_footer("All checks passed" if not fix else "We fixed up your forms as best we could, but one appeared to be corrupted"), view=v)
+        ).set_footer(text=("All checks passed" if not fix else "We fixed up your forms as best we could, but one appeared to be corrupted")), view=v)
         if not page:
             await v.wait()
             d = {
