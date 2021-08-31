@@ -193,11 +193,11 @@ def parsedForm(data):
                 return (400, f"No options were provided for question '{question['title']}'")
             question["options"]["min"] = max(int(question["options"]["min"]), 1)
             question["options"]["max"] = min(int(question["options"]["max"]), len(question["options"]["options"]))
+            fixed = {}
+            for k, v in question["options"]["options"].items():
+                fixed[int(k)] = v
+            question["options"]["options"] = fixed
             for i in range(len(question["options"]["options"])):
-                print(question["options"]["options"])
-                if isinstance(question["options"]["options"].keys(), str):
-                    question["options"]["options"][int(i)] = question["options"]["options"][str(i)]
-                    del question["options"]["options"][str(i)]
                 if len(question["options"]["options"][int(i)]) != 2:
                     return (400, f"Option '{i}' does not have a title")
                 question["options"]["options"][int(i)][0] = question["options"]["options"][int(i)][0][:100]
