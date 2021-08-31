@@ -109,8 +109,9 @@ class New(commands.Cog):
         for form in entry.data:
             if not isinstance(self.handlers.parsedForm(form), tuple):
                 newdata.append(form)
-        if newdata != entry.data:
-            fix = True
+            else:
+                fix = True
+        if fix:
             await entry.update(data=newdata)
         v = self.handlers.createUI(ctx, [
             self.handlers.Button(cb="cr", label="Create", style="success", emoji=self.bot.get_emoji(self.emojis(idOnly=True).question.new)),
