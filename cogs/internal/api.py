@@ -75,8 +75,7 @@ async def addAndDelete(data, verified, code):
 
 
 @app.post("/upload")
-@limiter.limit("10/minute")
-async def responses(request, data: ServiceResponse):
+async def responses(data: ServiceResponse):
     from bot import bot
     from cogs.handlers import parsedForm
     data = dict(data)
