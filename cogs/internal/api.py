@@ -81,8 +81,8 @@ async def responses(data: ServiceResponse):
     data = dict(data)
 
     data["data"] = parsedForm(data["data"])
-    if isinstance(data["data"], int):
-        return PlainTextResponse("400", status_code=data["data"])
+    if isinstance(data["data"], tuple):
+        return PlainTextResponse(data["data"][0], status_code=data["data"][0])
 
     verified = False
     code = ""

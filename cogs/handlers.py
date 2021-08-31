@@ -130,9 +130,9 @@ def parsedForm(data):
     out = {}
     out["id"] = str(datetime.datetime.now().timestamp())
     if "name" not in data:
-        return 400
+        return (400, "No name was provided." + (" Did you mean 'name'?" if "title" in data else ""))
     if "questions" not in data:
-        return 400
+        return (400, "No questions were privided. At least one is required")
 
     if "active" not in data:
         out["active"] = True
@@ -153,55 +153,55 @@ def parsedForm(data):
 
     for question in data["questions"]:
         question["id"] = str(datetime.datetime.now().timestamp())
-        if "type" not in ["text", "number", "multichoice", "fileupload", "time", "date", "text-decoration", "image-decoration", "url-decoration"]:
-            return 400
-        if "title" not in question:
-            return 400
-        if "description" not in question:
+        if question["type"] not in ["text", "number", "multichoice", "fileupload", "time", "date", "text-decoration", "image-decoration", "url-decoration"]:
+            return (400, f"Type '{question['type']}' does not exist")
+        if question["title"] not in question:
+            return (400, f'No question title was privided')
+        if question["description"] not in question:
             question["description"] = ""
-        if "required" not in question:
+        if question["required"] not in question:
             question["required"] = True
-        if "colour" not in question:
-            return 400
+        if question["colour"] not in question:
+            return (400, f"No colour was provided for question '{question['title']}'")
         if question["colour"] not in ["red", "orange", "yellow", "green", "blue", "purple", "pink", "grey"]:
-            return 400
+            return (400, f"Colour '{question['colour']}' does not exist")
         if "options" not in question:
-            return 400
+            return (400, f"No options were provided for question '{question['title']}'")
 
         if question["type"] == "text":
             if "min" not in question["options"]:
-                return 400
+                return (400, f"No minimum length was provided for question '{question['title']}'")
             if "max" not in question["options"]:
-                return 400
+                return (400, f"No maximum length was provided for question '{question['title']}'")
             question["options"]["min"] = max(int(question["options"]["min"]), 1)
             question["options"]["max"] = min(int(question["options"]["max"]), 2000)
         elif question["type"] == "number":
             if "min" not in question["options"]:
-                return 400
+                return (400, f"No minimum value was provided for question '{question['title']}'")
             if "max" not in question["options"]:
-                return 400
+                return (400, f"No maximum value was provided for question '{question['title']}'")
             question["options"]["min"] = max(int(question["options"]["min"]), 2 ** 32)
             question["options"]["max"] = min(int(question["options"]["max"]), 2 ** 32)
         elif question["type"] == "multichoice":
             if "min" not in question["options"]:
-                return 400
+                return (400, f"No minimum options was provided for question '{question['title']}'")
             if "max" not in question["options"]:
-                return 400
+                return (400, f"No maximum options was provided for question '{question['title']}'")
             if not len(question["options"]["options"]):
-                return 400
+                return (400, f"No options were provided for question '{question['title']}'")
             question["options"]["min"] = max(int(question["options"]["min"]), 1)
             question["options"]["max"] = min(int(question["options"]["max"]), len(question["options"]["options"]))
             for i in range(len(question["options"]["options"])):
                 if len(question["options"]["options"][i]) != 2:
-                    return 400
+                    return (400, f"Option '{i}' does not have a title")
                 question["options"]["options"][i][0] = question["options"]["options"][i][0][:100]
                 question["options"]["options"][i][1] = question["options"]["options"][i][1][:100]
         elif question["type"] == "image-decoration":
             if "url" not in question["options"]:
-                return 400
+                return (400, f"No image url was provided for question '{question['title']}'")
         elif question["type"] == "url-decoration":
             if "url" not in question["options"]:
-                return 400
+                return (400, f"No url was provided for question '{question['title']}'")
 
         out["questions"].append(question)
     return out
