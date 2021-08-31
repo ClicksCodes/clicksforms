@@ -106,6 +106,7 @@ class GoogleForms(commands.Cog):
                 entry = await self.db.get(ctx.guild.id)
                 newdata = entry.data
                 newdata.append(rdata)
+                print(rdata)
                 await entry.update(data=newdata)
                 try:
                     async with aiohttp.ClientSession() as session:

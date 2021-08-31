@@ -131,6 +131,7 @@ def parsedForm(data):
     out["id"] = str(datetime.datetime.now().timestamp())
     if "name" not in data:
         return (400, "No name was provided." + (" Did you mean 'name'?" if "title" in data else ""))
+    out["name"] = data["name"]
     if "questions" not in data:
         return (400, "No questions were privided. At least one is required")
 
