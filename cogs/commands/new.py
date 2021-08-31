@@ -143,9 +143,17 @@ class New(commands.Cog):
         if page == "create" or v.selected == "cr":
             return await self._create(ctx, m, createdBy, interaction)
         entry = await self.db.get(ctx.guild.id)
+        newdata = []
         o = []
         for form in entry.data:
-            o.append(discord.SelectOption(value=str(form["id"]), label=form["name"], description=form["description"]))
+            try:
+                o.append(discord.SelectOption(value=str(form["id"]), label=form["name"], description=form["description"]))
+                newdata.append(form)
+            except KeyError:
+                pass
+        if newdata != entry.data:
+            await entry.update(data=newdata)
+            entry.data = newdata
         if not len(o):
             o.append(discord.SelectOption(value="n", label="No forms", description="There are no forms to manage"))
         if page == "edit" or v.selected == "ed":
