@@ -176,6 +176,8 @@ def parsedForm(data):
             return (400, f"Type '{question['type']}' does not exist")
         if "title" not in question:
             return (400, f'No question title was privided')
+        if not question["title"]:
+            question["title"] = question["type"].capitalize()
         if "description" not in question:
             question["description"] = ""
         if "required" not in question:
