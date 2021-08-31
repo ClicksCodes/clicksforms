@@ -194,6 +194,7 @@ def parsedForm(data):
             question["options"]["min"] = max(int(question["options"]["min"]), 1)
             question["options"]["max"] = min(int(question["options"]["max"]), len(question["options"]["options"]))
             for i in range(len(question["options"]["options"])):
+                print(question["options"]["options"])
                 if isinstance(question["options"]["options"].keys(), str):
                     question["options"]["options"][int(i)] = question["options"]["options"][str(i)]
                     del question["options"]["options"][str(i)]
