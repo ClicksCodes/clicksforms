@@ -113,7 +113,7 @@ class GoogleForms(commands.Cog):
                             "guild_id": ctx.guild.id,
                             "created_by": ctx.author.id,
                             "questions": len(rdata["questions"]),
-                            "name": rdata["title"],
+                            "name": rdata["name"],
                             "service": servicedata[0],
                             "service_url": servicedata[1],
                             "verified": verified,
