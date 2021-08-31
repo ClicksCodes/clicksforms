@@ -101,8 +101,7 @@ async def responses(data: ServiceResponse):
 
 
 def setup(bot):
-    # config = uvicorn.Config(app, host="0.0.0.0", port=10006, lifespan="on", access_log=False, log_level="critical")
-    config = uvicorn.Config(app, host="0.0.0.0", port=10006, lifespan="on", access_log=False)
+    config = uvicorn.Config(app, host="0.0.0.0", port=10006, lifespan="on", access_log=False, log_level="critical")
     server = uvicorn.Server(config)
     server.config.setup_event_loop()
     if not hasattr(bot, "loop"):

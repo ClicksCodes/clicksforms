@@ -197,7 +197,8 @@ def parsedForm(data):
                 if len(question["options"]["options"][str(i)]) != 2:
                     return (400, f"Option '{i}' does not have a title")
                 question["options"]["options"][str(i)][0] = question["options"]["options"][str(i)][0][:100]
-                question["options"]["options"][str(i)][1] = question["options"]["options"][str(i)][1][:100]
+                if isinstance(question["options"]["options"][str(i)][1], str):
+                    question["options"]["options"][str(i)][1] = question["options"]["options"][str(i)][1][:100]
         elif question["type"] == "image-decoration":
             if "url" not in question["options"]:
                 return (400, f"No image url was provided for question '{question['title']}'")
