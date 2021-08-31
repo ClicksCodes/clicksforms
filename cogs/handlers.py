@@ -198,7 +198,6 @@ def parsedForm(data):
                 fixed[int(k)] = v
             question["options"]["options"] = fixed
             for i in question["options"]["options"].keys():
-                print(question["options"]["options"])
                 if len(question["options"]["options"][int(i)]) != 2:
                     return (400, f"Option '{i}' does not have a title")
                 question["options"]["options"][int(i)][0] = question["options"]["options"][int(i)][0][:100]
