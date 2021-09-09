@@ -288,7 +288,7 @@ class New(commands.Cog):
             ))
             count += 1
         v = self.handlers.createUI(ctx, [
-            self.handlers.Select(id="order", placeholder="Decoration type", autoaccept=True, options=o, min_values=len(o), max_values=len(o)),
+            self.handlers.Select(id="order", placeholder="Questions", autoaccept=True, options=o, min_values=len(o), max_values=len(o)),
             self.handlers.Button(cb="ba", label="Back", style="danger", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.left))
         ])
         await m.edit(embed=discord.Embed(
@@ -298,7 +298,7 @@ class New(commands.Cog):
         ), view=v)
         await v.wait()
         if v.selected is not None:
-            return
+            return data
         neworder = []
         for i in v.dropdowns["order"]:
             neworder.append(data["questions"][int(i)])

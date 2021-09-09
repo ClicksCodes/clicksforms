@@ -1,7 +1,9 @@
+from enum import auto
 import discord
 import datetime
 import aiohttp
 from discord.ext import commands
+from sqlalchemy.sql.expression import desc
 
 from cogs.consts import *
 from cogs import handlers
@@ -30,7 +32,7 @@ class GoogleForms(commands.Cog):
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
                 ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
-                if not len(interaction.data["options"]):
+                if not "options" in interaction.data:
                     await self._service(ctx, m)
                 else:
                     await self._fetch(ctx, m, interaction.data["options"][0]["value"])
@@ -45,7 +47,7 @@ class GoogleForms(commands.Cog):
         v = self.handlers.createUI(ctx, [
             self.handlers.Select("service", options=[
                 discord.SelectOption(label="YourApps", value="ya", description="YourApps by DDS")
-            ])
+            ], autoaccept=True),
         ])
         await m.edit(embed=discord.Embed(
             title="Select a service",
@@ -53,7 +55,8 @@ class GoogleForms(commands.Cog):
             color=self.colours.blue
         ), view=v)
         await v.wait()
-        if v.selected_option.value == "ya":
+        if v.dropdowns["service"][0] == "ya":
+            print("ya")
             await self._ya(ctx, m)
         else:
             return await m.edit(embed=discord.Embed(
@@ -63,11 +66,27 @@ class GoogleForms(commands.Cog):
             ), view=None)
 
     async def _ya(self, ctx, m):
-        return await m.edit(embed=discord.Embed(
-            title="Error",
-            description="Service not supported",
-            color=self.colours.red
-        ), view=None)
+        # d = {}
+        # try:
+        #     async with aiohttp.ClientSession() as session:
+        #         async with session.get(f"https://api.yourapps.cyou/guilds/mutual?user_id={ctx.author.id}", headers={
+        #             "Authorization": "Bearer NDM4NzMzMTU5NzQ4NTk5ODEz.NzIwNjc1.IFKTw5vZjbVCjL7ZWNJ3Ymc6PsLi0XkO9Q5OzUX30yMPXm0kHC5vJ1UPBG15pFc7YxPlQl+kwX9v8V6/SORHeQ=="
+        #         }) as r:
+        #             d = await r.json()
+        #             s = []
+        #             for k, v in d.items():
+        #                 s.append(discord.SelectOption(label=v, value=str(k)))
+        # except aiohttp.ClientConnectorError:
+        #     return
+        # v = self.handlers.createUI(ctx, [self.handlers.Select(s[:25], autoaccept=True)])
+        # await m.edit(embed=discord.Embed(
+        #     title="Select a server",
+        #     description="Select a server to find forms in",
+        #     color=self.colours.blue
+        # ), view=v)
+        # await v.wait()
+        # print(v.dropdowns)
+        pass
 
     async def _fetch(self, ctx, m, code):
         if not ctx.channel.permissions_for(ctx.author).manage_guild or not ctx.channel.permissions_for(ctx.author).manage_roles:
@@ -106,7 +125,6 @@ class GoogleForms(commands.Cog):
                 entry = await self.db.get(ctx.guild.id)
                 newdata = entry.data
                 newdata.append(rdata)
-                print(rdata)
                 await entry.update(data=newdata)
                 try:
                     async with aiohttp.ClientSession() as session:
