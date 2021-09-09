@@ -397,7 +397,7 @@ class Apply(commands.Cog):
                                     choices['month'] = month
                                 maxDays = calendar.monthrange(year, choices["month"] + 1)[1]
                                 if 1 <= choices["day"] <= maxDays:
-                                    answers.append([question["id"], f"{choices['year']}-{choices['month']}-{choices['day']}"])
+                                    answers.append([question["id"], f"{choices['year']}-{int(choices['month']) + 1}-{choices['day']}"])
                                     break
                 if out:
                     break
