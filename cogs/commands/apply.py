@@ -171,11 +171,11 @@ class Apply(commands.Cog):
                 disabled = False
                 roles = [r.id for r in ctx.author.roles]
                 for role in guildData[choice]["disallowed_roles"]:
-                    if role in roles:
+                    if str(role) in roles:
                         warnings.append(f"You are not allowed to apply with the {ctx.guild.get_role(role).mention} role")
                         disabled = True
                 for role in guildData[choice]["required_roles"]:
-                    if role not in roles:
+                    if str(role) not in roles:
                         warnings.append(f"You need the {ctx.guild.get_role(role).mention} role to apply")
                         disabled = True
                 e = [self.handlers.Button(cb="ap", label="Apply", style="success", emoji=self.emojis().control.right, disabled=disabled)]
