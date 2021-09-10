@@ -169,7 +169,7 @@ class Apply(commands.Cog):
                 o.append(discord.SelectOption(value="-1", label="No forms", description="This server does not have any forms", default=True))
             if choice >= 0:
                 disabled = False
-                roles = [r.id for r in ctx.author.roles]
+                roles = [str(r.id) for r in ctx.author.roles]
                 for role in guildData[choice]["disallowed_roles"]:
                     if str(role) in roles:
                         warnings.append(f"You are not allowed to apply with the {ctx.guild.get_role(int(role)).mention} role")
