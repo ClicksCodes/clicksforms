@@ -66,7 +66,7 @@ class New(commands.Cog):
                         description="Make sure `@everyone` has permission to use custom emojis to use this command"
                     ), ephemeral=True)
                 if not interaction.channel.permissions_for(interaction.user).manage_guild or \
-                    not interaction.channel.permissions_for(interaction.user).manage_roles:
+                   not interaction.channel.permissions_for(interaction.user).manage_roles:
                     return await interaction.response.send_message(embed=discord.Embed(
                         title="Missing permissions",
                         description="You need manage server and manage roles to run this command",
@@ -976,7 +976,7 @@ class New(commands.Cog):
         return data
 
     async def newTextDecoration(self, m, ctx, data, default=None):
-        question = default or {"type": "text-decoration", "title": "", "description": "", "colour": "red", "options": {},}
+        question = default or {"type": "text-decoration", "title": "", "description": "", "colour": "red", "options": {}}
         self.cl = []
         if default:
             self.cl = ["ti", "de", "co"]

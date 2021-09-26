@@ -32,7 +32,7 @@ class GoogleForms(commands.Cog):
                 await interaction.response.send_message(embed=loading_embed, ephemeral=True)
                 m = await interaction.original_message()
                 ctx = self.handlers.CustomCTX(self.bot, interaction.user, interaction.guild, interaction.channel, interaction=interaction, m=m)
-                if not "options" in interaction.data:
+                if "options" not in interaction.data:
                     await self._service(ctx, m)
                 else:
                     await self._fetch(ctx, m, interaction.data["options"][0]["value"])
@@ -146,6 +146,7 @@ class GoogleForms(commands.Cog):
                     description="Your form can now be accessed through `/apply`. If you would like to edit the form, run `/manage`",
                     color=self.colours.green
                 ), view=None)
+
 
 def setup(bot):
     bot.add_cog(GoogleForms(bot))

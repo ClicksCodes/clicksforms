@@ -47,7 +47,7 @@ class Responses(commands.Cog):
                         description="Make sure `@everyone` has permission to use custom emojis to use this command"
                     ), ephemeral=True)
                 if not interaction.channel.permissions_for(interaction.user).manage_guild or \
-                    not interaction.channel.permissions_for(interaction.user).manage_guild:
+                   not interaction.channel.permissions_for(interaction.user).manage_guild:
                     return await ctx.send(embed=discord.Embed(
                         title="Missing permissions",
                         description="You need manage server and manage roles to run this command",

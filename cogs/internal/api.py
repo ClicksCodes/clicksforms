@@ -18,10 +18,12 @@ app.state.limiter = limiter
 colours = Colours()
 emojis = Emojis
 
+
 @app.get("/")
 def root():
     from bot import bot
     return PlainTextResponse(str(bot.latency))
+
 
 @app.get("/in/{guild}")
 async def inGuild(guild: int):
@@ -29,6 +31,7 @@ async def inGuild(guild: int):
     if guild in [g.id for g in bot.guilds]:
         return PlainTextResponse("True", 200)
     return PlainTextResponse("False", 404)
+
 
 class Auth(BaseModel):
     token: str
