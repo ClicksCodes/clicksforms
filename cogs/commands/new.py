@@ -477,7 +477,7 @@ class New(commands.Cog):
         await v.wait()
         return v.selected
 
-    async def RoleInput(self, ctx, m, title, description, optional=False, cap=25):
+    async def RoleInput(self, ctx, m, title, description, optional=False, cap=25, permCheck=False):
         v = self.handlers.createUI(ctx, [
             self.handlers.Button(cb="ca", label="Cancel", style="danger", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.cross))
         ] + ([self.handlers.Button(cb="sk", label="Skip", style="success", emoji=self.bot.get_emoji(self.emojis(idOnly=True).control.tick))] if optional else []))
@@ -508,7 +508,7 @@ class New(commands.Cog):
         if hasattr(response, "data"):
             await response.response.send_message(embed=discord.Embed(title="Accepted", color=self.colours.green))
             await response.delete_original_message()
-            return [r for r in list(response.data["resolved"]["roles"].keys())[:cap]]
+            return [r for r in list(response.data["resolved"]["roles"].keys())[:cap] if (ctx.guild.get_role(r).position < ctx.author.top_role.position)]
         return None
 
     async def CategoryInput(self, ctx, m, title, description, optional=False):
@@ -1254,25 +1254,25 @@ class New(commands.Cog):
             elif v.selected == "aa":
                 data["auto_accept"] = not data["auto_accept"]
             elif v.selected == "rr":
-                roles = await self.RoleInput(ctx, m, "Required roles", "What roles are required to use this form", optional=True)
+                roles = await self.RoleInput(ctx, m, "Required roles", "What roles are required to use this form", optional=True, permCheck=True)
                 if roles is True:
                     data["required_roles"] = []
                 elif roles:
                     data["required_roles"] = roles
             elif v.selected == "dr":
-                roles = await self.RoleInput(ctx, m, "Disallowed roles", "What roles are not allowed to use this form", optional=True)
+                roles = await self.RoleInput(ctx, m, "Disallowed roles", "What roles are not allowed to use this form", optional=True, permCheck=True)
                 if roles is True:
                     data["disallowed_roles"] = []
                 elif roles:
                     data["disallowed_roles"] = roles
             elif v.selected == "gr":
-                roles = await self.RoleInput(ctx, m, "Given roles", "What roles should been given to users when the form is accepted", optional=True)
+                roles = await self.RoleInput(ctx, m, "Given roles", "What roles should been given to users when the form is accepted", optional=True, permCheck=True)
                 if roles is True:
                     data["given_roles"] = []
                 elif roles:
                     data["given_roles"] = roles
             elif v.selected == "re":
-                roles = await self.RoleInput(ctx, m, "Removed roles", "What roles should be removed from users when the form is accepted", optional=True)
+                roles = await self.RoleInput(ctx, m, "Removed roles", "What roles should be removed from users when the form is accepted", optional=True, permCheck=True)
                 if roles is True:
                     data["removed_roles"] = []
                 elif roles:
