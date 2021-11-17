@@ -53,7 +53,7 @@ async def code(code, token):
         return PlainTextResponse("Invalid Token", status_code=403)
     if code not in bot.webCodes:
         return PlainTextResponse("Form not found", status_code=404)
-    guild, formId = bot.webCodes[code][0]
+    guild, formId = bot.webCodes[code]
     form = await Database().get(int(guild))
     data = {}
     for form in form.data:
