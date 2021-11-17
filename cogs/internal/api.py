@@ -50,9 +50,9 @@ async def code(code, token):
     from cogs.handlers import Database
     from bot import bot
     if token != config.webToken:
-        return PlainTextResponse("Invalid Token", 403)
+        return PlainTextResponse("Invalid Token", status_code=403)
     if code not in bot.webCodes:
-        return PlainTextResponse("Form not found", 404)
+        return PlainTextResponse("Form not found", status_code=404)
     guild, formId = bot.webCodes[code][0]
     form = await Database().getForm(int(guild))
     data = {}
@@ -61,8 +61,8 @@ async def code(code, token):
             data = form
             break
     if data == {}:
-        return PlainTextResponse("Form not found", 404)
-    return JSONResponse(data, 200)
+        return PlainTextResponse("Form not found", status_code=404)
+    return JSONResponse(data, status_code=200)
 
 
 @app.get("/forms")
