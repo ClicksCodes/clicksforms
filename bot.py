@@ -16,3 +16,4 @@ bot = Bot(
 )
 bot.requests = {}
 bot.codes = {}
+bot.webCodes = {}

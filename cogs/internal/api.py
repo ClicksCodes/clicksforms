@@ -45,6 +45,26 @@ class ServiceResponse(BaseModel):
     data: dict
 
 
+@app.get("/code/{code:str}/token/{token:str}")
+async def code(code, token):
+    from cogs.handlers import Database
+    from bot import bot
+    if token != config.webToken:
+        return PlainTextResponse("Invalid Token", 403)
+    if code not in bot.webCodes:
+        return PlainTextResponse("Form not found", 404)
+    guild, formId = bot.webCodes[code][0]
+    form = await Database().getForm(int(guild))
+    data = {}
+    for form in form.data:
+        if form["id"] == formId:
+            data = form
+            break
+    if data == {}:
+        return PlainTextResponse("Form not found", 404)
+    return JSONResponse(data, 200)
+
+
 @app.get("/forms")
 async def forms(auth: Auth):
     from cogs.handlers import Database
