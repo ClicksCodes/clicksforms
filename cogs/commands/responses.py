@@ -158,6 +158,8 @@ class Responses(commands.Cog):
                             if r[1] is None:
                                 q = "*Question skipped*"
                             elif t == "multichoice":
+                                print(r[1])
+                                print(questions[question]["options"]["options"])
                                 q = "\n".join([f"> {questions[question]['options']['options'][str(n)][0]}" for n in r[1]])
                     await m.edit(embed=discord.Embed(
                         title="Responses",
