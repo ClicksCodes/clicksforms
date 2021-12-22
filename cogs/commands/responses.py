@@ -160,7 +160,10 @@ class Responses(commands.Cog):
                             elif t == "multichoice":
                                 print(r)
                                 print(questions[question]["options"]["options"])
-                                q = "\n".join([f"> {questions[question]['options']['options'][str(n)][0]}" for n in r[1]])
+                                q = "\n".join([
+                                    f"> {questions[question]['options']['options'][str(n)][0]}" if str(n) in questions[question]['options']['options']
+                                    else "> *Unknown*" for n in r[1]
+                                ])
                     await m.edit(embed=discord.Embed(
                         title="Responses",
                         description=f"**User:** {'Anonymous' if form['anonymous'] else self.bot.get_user(responses[applicant]['user']).mention}\n"
