@@ -158,7 +158,7 @@ class Responses(commands.Cog):
                             if r[1] is None:
                                 q = "*Question skipped*"
                             elif t == "multichoice":
-                                q = "\n".join([f"> {questions[question]['options'][str(n)][0]}" for n in r[1]])
+                                q = "\n".join([f"> {questions[question]['options']['options'][str(n)][0]}" for n in r[1]])
                     await m.edit(embed=discord.Embed(
                         title="Responses",
                         description=f"**User:** {'Anonymous' if form['anonymous'] else self.bot.get_user(responses[applicant]['user']).mention}\n"
