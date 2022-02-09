@@ -6,16 +6,18 @@ import orm
 import sqlalchemy
 
 database = databases.Database("sqlite:///main.db")
+models = orm.ModelRegistry(database=database)
 metadata = sqlalchemy.MetaData()
 
 
 class GuildData(orm.Model):
-    __tablename__ = "data"
-    __database__ = database
-    __metadata__ = metadata
-    id = orm.Integer(primary_key=True)
-    data = orm.JSON()
-    responses = orm.JSON()
+    tablename = "data"
+    registry = models
+    fields = {
+        "id": orm.Integer(primary_key=True),
+        "data": orm.JSON(),
+        "responses": orm.JSON()
+    }
 
 
 class Database:
