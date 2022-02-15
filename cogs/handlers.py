@@ -4,6 +4,7 @@ from cogs.consts import *
 import databases
 import orm
 import sqlalchemy
+import json
 
 database = databases.Database("sqlite:///main.db")
 models = orm.ModelRegistry(database=database)
@@ -20,6 +21,25 @@ class GuildData(orm.Model):
     }
 
 
+class Data:
+    def __init__(self, guild, data, responses):
+        self.data = data
+        self.responses = responses
+        self.guild = guild
+
+    async def update(self, data=None, responses=None):
+        with open("data/db.json") as entry:
+            entry = json.load(entry)
+            if self.guild in entry:
+                if data:
+                    entry[self.guild]["data"] = data
+                if responses:
+                    entry[self.guild]["responses"] = responses
+            else:
+                entry[self.guild] = {"data": data, "responses": responses}
+        with open("data/db.json", "w") as f:
+            json.dump(entry, f, indent=4)
+
 class Database:
     def __init__(self):
         self.db = GuildData
@@ -27,14 +47,18 @@ class Database:
     async def get(self, guild):
         if isinstance(guild, discord.Guild):
             guild = guild.id
+        guild = str(guild)
+        with open("data/db.json") as entry:
+            entry = json.load(entry)
+            if guild in entry:
+                return Data(guild, entry[guild]["data"], entry[guild]["responses"])
         try:
-            return await self.db.objects.get(id=guild)
+            data = await self.db.objects.get(id=int(guild))
+            return Data(guild, data.data, data.responses)
         except orm.NoMatch:
-            return await self.create(guild=guild)
-
-    async def create(self, guild):
-        return await self.db.objects.create(id=guild, data=[], responses={})
-
+            with open("data/db.json", "w") as entry:
+                entry.write(json.dumps({guild: {"data": [], "responses": {}}}, indent=4))
+            return Data(guild, [], {})
 
 engine = sqlalchemy.create_engine(str(database.url))
 metadata.create_all(engine)

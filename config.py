@@ -20,6 +20,7 @@ class Config:
             self.stage = Stage[(os.environ.get("PRODUCTION", "DEV")).upper()]
         except KeyError:
             self.stage = Stage.DEV
+        # self.stage = Stage.PRODUCTION
 
     def __getattr__(self, item):
         return self.config.get(f"{item}-{self.stage.name.lower()}", self.config[item])
