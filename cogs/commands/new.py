@@ -503,9 +503,7 @@ class New(commands.Cog):
             future.cancel()
 
         response = done.pop().result()
-        if isinstance(response, bool):
-            return True
-        if hasattr(response, "selected") and response.selected is not None:
+        if v.selected is not None:
             return True
         if hasattr(response, "data"):
             await response.response.send_message(embed=discord.Embed(title="Accepted", color=self.colours.green))
